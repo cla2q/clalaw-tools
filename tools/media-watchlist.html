@@ -170,6 +170,8 @@
     .type-badge.movie { background: #2a1a4e; color: #b39ddb; }
     .type-badge.tv    { background: #1a2a4e; color: #90caf9; }
     .type-badge.doc   { background: #2a2a1a; color: #fff176; }
+    .type-badge.book  { background: #1a2a1a; color: #a5d6a7; }
+    .type-badge.music { background: #2a1a1a; color: #ef9a9a; }
 
     .item-info { flex: 1; }
     .item-title { font-size: 1rem; font-weight: bold; }
@@ -224,6 +226,8 @@
         <option value="movie">Movie</option>
         <option value="tv">TV</option>
         <option value="doc">Doc</option>
+        <option value="book">Book</option>
+        <option value="music">Music</option>
       </select>
       <input name="addedBy" type="text" placeholder="Added by" id="addedByInput" />
       <button class="btn" onclick="addItem()">Add</button>
@@ -236,6 +240,8 @@
     <button class="filter-btn" onclick="setFilter('movie', this)">Movies</button>
     <button class="filter-btn" onclick="setFilter('tv', this)">TV</button>
     <button class="filter-btn" onclick="setFilter('doc', this)">Docs</button>
+    <button class="filter-btn" onclick="setFilter('book', this)">Books</button>
+    <button class="filter-btn" onclick="setFilter('music', this)">Music</button>
     <button class="filter-btn" onclick="setFilter('watched', this)">Watched</button>
   </div>
 
