@@ -214,7 +214,7 @@
   </nav>
 
   <header>
-    <h1>🎬 Watchlist</h1>
+    <h1>📋 Watchlist</h1>
     <p>Content to collect.</p>
   </header>
 
@@ -236,13 +236,13 @@
 
   <div class="filters">
     <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-    <button class="filter-btn" onclick="setFilter('unwatched', this)">To Watch</button>
+    <button class="filter-btn" onclick="setFilter('unwatched', this)">Get</button>
     <button class="filter-btn" onclick="setFilter('movie', this)">Movies</button>
     <button class="filter-btn" onclick="setFilter('tv', this)">TV</button>
     <button class="filter-btn" onclick="setFilter('doc', this)">Docs</button>
     <button class="filter-btn" onclick="setFilter('book', this)">Books</button>
     <button class="filter-btn" onclick="setFilter('music', this)">Music</button>
-    <button class="filter-btn" onclick="setFilter('watched', this)">Watched</button>
+    <button class="filter-btn" onclick="setFilter('watched', this)">Gotten</button>
   </div>
 
   <div id="loading">Loading watchlist…</div>
@@ -299,7 +299,7 @@
             <div class="item-meta">Added by ${escHtml(item.addedBy || 'unknown')}</div>
           </div>
           <div class="item-actions">
-            <button class="icon-btn watched-btn" onclick="toggleWatched('${item.id}', ${item.watched})" title="${item.watched ? 'Mark unwatched' : 'Mark watched'}">
+            <button class="icon-btn watched-btn" onclick="toggleWatched('${item.id}', ${item.watched})" title="${item.watched ? 'Mark undone' : 'Mark done'}">
               ${item.watched ? '↩' : '✓'}
             </button>
             <button class="icon-btn delete" onclick="removeItem('${item.id}')" title="Delete">✕</button>
@@ -310,7 +310,7 @@
 
     const total = allItems.length;
     const watched = allItems.filter(i => i.watched).length;
-    document.getElementById('statusBar').textContent = `${watched} of ${total} watched`;
+    document.getElementById('statusBar').textContent = `${watched} of ${total} done`;
   }
 
   window.addItem = async function() {
