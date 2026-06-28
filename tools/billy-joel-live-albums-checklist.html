@@ -1,124 +1,386 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Billy Joel Live Albums Collection Checklist</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Georgia, serif; background: #1a1a2e; color: #e0e0e0; min-height: 100vh; padding: 30px 20px; }
-    .container { max-width: 700px; margin: 0 auto; }
-    header { text-align: center; margin-bottom: 36px; }
-    header h1 { font-size: 2rem; color: #f5c842; letter-spacing: 1px; }
-    header p { font-size: 0.95rem; color: #aaa; margin-top: 8px; }
-    .progress-bar-wrapper { background: #2e2e4e; border-radius: 12px; height: 18px; overflow: hidden; margin: 16px 0 6px; }
-    .progress-bar { height: 100%; background: linear-gradient(90deg, #f5c842, #e87d2b); border-radius: 12px; transition: width 0.4s ease; width: 0%; }
-    .progress-label { text-align: center; font-size: 0.85rem; color: #aaa; margin-bottom: 28px; }
-    .section-label { font-size: 0.75rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; color: #888; margin: 24px 0 10px; padding-left: 4px; }
-    .album-card { display: flex; align-items: center; background: #16213e; border: 1px solid #2a2a4e; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.1s; user-select: none; }
-    .album-card:hover { background: #1e2d55; border-color: #f5c842; transform: translateX(3px); }
-    .album-card.owned { background: #0d2b1e; border-color: #2ecc71; }
-    .album-card.owned .album-title { text-decoration: line-through; color: #6fcf97; }
-    .rank { font-size: 1.4rem; font-weight: bold; color: #f5c842; width: 40px; flex-shrink: 0; text-align: center; }
-    .album-card.not-ranked .rank { font-size: 0.6rem; color: #888; line-height: 1.4; }
-    .album-info { flex: 1; padding: 0 14px; }
-    .album-title { font-size: 1rem; font-weight: bold; color: #e8e8e8; }
-    .album-year { font-size: 0.8rem; color: #888; margin-top: 3px; }
-    .checkbox { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #555; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; color: transparent; transition: border-color 0.2s, background 0.2s; }
-    .album-card.owned .checkbox { border-color: #2ecc71; background: #2ecc71; color: #fff; }
-    #sync-status { text-align: center; font-size: 0.75rem; color: #555; margin-bottom: 16px; font-family: Arial, sans-serif; letter-spacing: 1px; }
-    nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 16px; border-bottom: 1px solid #2a2a4e; }
-    nav a { font-family: Arial, sans-serif; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: #888; text-decoration: none; }
-    nav a:hover { color: #f5c842; }
-    .nav-brand { font-size: 1rem; font-weight: bold; letter-spacing: 3px; color: #f5c842; }
-    footer { text-align: center; margin-top: 36px; font-size: 0.78rem; color: #555; }
-    footer a { color: #777; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billy Joel Live Albums Tracker</title>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --surface: #242424;
+    --surface2: #2e2e2e;
+    --border: #3a3a3a;
+    --gold: #d4a847;
+    --gold-light: #e8c068;
+    --green: #2ecc71;
+    --green-dark: #27ae60;
+    --green-bg: rgba(46,204,113,0.08);
+    --red: #c8102e;
+    --red-dark: #a00d24;
+    --need-bg: rgba(200,16,46,0.06);
+    --text: #f0f0f0;
+    --text-muted: #888;
+    --text-dim: #aaa;
+    --radius: 10px;
+    --transition: 0.2s ease;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 820px;
+    margin: 0 auto 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  nav a {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  nav a:hover { color: var(--gold); }
+  .nav-brand {
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .header .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .header .icon { font-size: 2.2rem; line-height: 1; }
+  .header h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
+  /* STATS */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 20px;
+    text-align: center;
+    min-width: 100px;
+  }
+  .stat .num { font-size: 1.6rem; font-weight: 800; display: block; }
+  .stat .lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+  #stat-have .num { color: var(--green); }
+  #stat-need .num { color: var(--red); }
+  #stat-total .num { color: var(--gold); }
+
+  /* PROGRESS */
+  .progress-wrap { max-width: 600px; margin: 0 auto 24px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+  .progress-bar {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-dark), var(--green));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* SYNC STATUS */
+  #sync-status {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 7px 16px;
+    border-radius: 99px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .filter-btn.active { background: var(--red); border-color: var(--red); color: #fff; }
+  .btn-mark-all, .btn-clear-all {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 7px 16px;
+    border-radius: 99px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+  }
+  .btn-mark-all:hover { border-color: var(--green); color: var(--green); }
+  .btn-clear-all:hover { border-color: var(--red); color: var(--red); }
+
+  /* ALBUM LIST */
+  .album-list {
+    max-width: 820px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    max-width: 820px;
+    margin: 8px auto 4px;
+    padding-left: 4px;
+  }
+
+  .album-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    position: relative;
+  }
+  .album-card:hover { border-color: #555; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+  .album-card.have {
+    border-color: rgba(46,204,113,0.35);
+    background: linear-gradient(135deg, var(--green-bg), var(--surface));
+  }
+  .album-card.need {
+    border-color: rgba(200,16,46,0.25);
+    background: linear-gradient(135deg, var(--need-bg), var(--surface));
+  }
+  .album-card.hidden { display: none; }
+
+  .status-stripe {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .album-card.have .status-stripe { background: var(--green); }
+  .album-card.need .status-stripe { background: var(--red); }
+
+  .rank-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 56px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .album-card.have .rank-badge { color: var(--green); }
+  .album-card.need .rank-badge { color: var(--red); }
+  .rank-badge .rank-label {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  .album-info {
+    flex: 1;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .album-title { font-weight: 700; font-size: 0.95rem; color: #fff; line-height: 1.3; }
+  .album-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .album-year {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--gold);
+    background: rgba(212,168,71,0.12);
+    padding: 1px 7px;
+    border-radius: 4px;
+  }
+  .album-label { font-size: 0.75rem; color: var(--text-muted); }
+  .album-note { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; margin-top: 2px; }
+
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    flex-shrink: 0;
+  }
+  .toggle-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 8px;
+    transition: var(--transition);
+  }
+  .toggle-btn:hover { background: rgba(255,255,255,0.05); }
+  .toggle-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    background: var(--surface2);
+  }
+  .album-card.have .toggle-icon {
+    background: var(--green-dark);
+    border-color: var(--green);
+    box-shadow: 0 0 10px rgba(46,204,113,0.3);
+  }
+  .album-card.need .toggle-icon {
+    background: var(--red-dark);
+    border-color: var(--red);
+    box-shadow: 0 0 10px rgba(200,16,46,0.3);
+  }
+  .toggle-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .album-card.have .toggle-label { color: var(--green); }
+  .album-card.need .toggle-label { color: var(--red); }
+
+  footer {
+    text-align: center;
+    margin-top: 36px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+  footer a { color: var(--gold); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 540px) {
+    .album-note { display: none; }
+    .rank-badge { min-width: 42px; font-size: 0.9rem; }
+    .toggle-wrap { padding: 0 10px; }
+  }
+</style>
 </head>
 <body>
-<div class="container">
-  <nav>
-    <span class="nav-brand">CLA <span style="color:#333">|</span> LAW</span>
-    <a href="/tools/">← Tools</a>
-  </nav>
-  <header>
-    <h1>&#127929; Billy Joel Live Albums</h1>
-    <p>Collection Checklist &mdash; Ranked Worst to Best</p>
-    <div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
-    <div class="progress-label" id="progressLabel">0 of 11 owned</div>
-  </header>
 
-  <div id="sync-status">Connecting…</div>
+<nav>
+  <span class="nav-brand">CLA <span style="color:#444">|</span> LAW</span>
+  <a href="/tools/">← Tools</a>
+</nav>
 
-  <div class="section-label">&#9660; Worst</div>
-
-  <div class="album-card" data-id="11" onclick="toggle(this)">
-    <div class="rank">11</div>
-    <div class="album-info"><div class="album-title">Kohuept</div><div class="album-year">1987 &bull; Columbia</div></div>
-    <div class="checkbox">&#10003;</div>
+<div class="header">
+  <div class="logo">
+    <span class="icon">🎹</span>
+    <h1>Billy Joel Live Albums Tracker</h1>
   </div>
-  <div class="album-card" data-id="10" onclick="toggle(this)">
-    <div class="rank">10</div>
-    <div class="album-info"><div class="album-title">Live at Shea Stadium: The Concert</div><div class="album-year">2011 &bull; Sony</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="9" onclick="toggle(this)">
-    <div class="rank">9</div>
-    <div class="album-info"><div class="album-title">2000 Years: The Millennium Concert</div><div class="album-year">2000 &bull; Columbia</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="8" onclick="toggle(this)">
-    <div class="rank">8</div>
-    <div class="album-info"><div class="album-title">Live in the Studio &ndash; Sigma Studios 1972</div><div class="album-year">2010 &bull; Columbia</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="7" onclick="toggle(this)">
-    <div class="rank">7</div>
-    <div class="album-info"><div class="album-title">Live at Carnegie Hall 1977</div><div class="album-year">2008 &bull; Legacy</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="6" onclick="toggle(this)">
-    <div class="rank">6</div>
-    <div class="album-info"><div class="album-title">A Matter of Trust: The Bridge to Russia</div><div class="album-year">2014 &bull; Columbia</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="5" onclick="toggle(this)">
-    <div class="rank">5</div>
-    <div class="album-info"><div class="album-title">Live at the Great American Music Hall, 1975</div><div class="album-year">2021 &bull; Columbia</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="4" onclick="toggle(this)">
-    <div class="rank">4</div>
-    <div class="album-info"><div class="album-title">Live at Yankee Stadium: June 22 &amp; 23, 1990</div><div class="album-year">2022 &bull; Legacy Recordings</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="3" onclick="toggle(this)">
-    <div class="rank">3</div>
-    <div class="album-info"><div class="album-title">Live From Long Island</div><div class="album-year">2023 &bull; Legacy Recordings</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="2" onclick="toggle(this)">
-    <div class="rank">2</div>
-    <div class="album-info"><div class="album-title">12 Gardens Live</div><div class="album-year">2006 &bull; Columbia</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-  <div class="album-card" data-id="1" onclick="toggle(this)">
-    <div class="rank">1</div>
-    <div class="album-info"><div class="album-title">Songs in the Attic</div><div class="album-year">1981 &bull; Columbia</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-
-  <div class="section-label">&#9650; Best</div>
-
-  <div class="section-label" style="margin-top:32px;">Not Ranked</div>
-  <div class="album-card not-ranked" data-id="nr1" onclick="toggle(this)">
-    <div class="rank">NOT<br>RANKED</div>
-    <div class="album-info"><div class="album-title">Live Through the Years</div><div class="album-year">2019 &bull; Columbia (digital only)</div></div>
-    <div class="checkbox">&#10003;</div>
-  </div>
-
-  <footer>Ranked by <a href="https://ultimateclassicrock.com/billy-joel-live-albums-ranked/" target="_blank">Ultimate Classic Rock</a> &bull; July 2024</footer>
+  <p>Ranked by Ultimate Classic Rock &mdash; Mark what you have or still need</p>
 </div>
+
+<div class="stats-bar">
+  <div class="stat" id="stat-total"><span class="num" id="total-num">11</span><span class="lbl">Total Albums</span></div>
+  <div class="stat" id="stat-have"><span class="num" id="have-num">0</span><span class="lbl">Have It</span></div>
+  <div class="stat" id="stat-need"><span class="num" id="need-num">0</span><span class="lbl">Need It</span></div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label"><span>Collection Progress</span><span id="progress-pct">0%</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<div id="sync-status">Connecting…</div>
+
+<div class="controls">
+  <button class="filter-btn active" data-filter="all">All (11)</button>
+  <button class="filter-btn" data-filter="have">Have It</button>
+  <button class="filter-btn" data-filter="need">Need It</button>
+  <button class="filter-btn" data-filter="unset">Unmarked</button>
+  <button class="btn-mark-all" id="btn-mark-all">✓ Mark All as Have</button>
+  <button class="btn-clear-all" id="btn-clear-all">✕ Clear All</button>
+</div>
+
+<div class="section-label">▼ Worst</div>
+<div class="album-list" id="album-list"></div>
+<div class="section-label" style="margin-top:8px;">▲ Best</div>
+
+<div class="section-label" style="margin-top:24px;">Not Ranked</div>
+<div class="album-list" id="unranked-list"></div>
+
+<footer>
+  <p>Ranked by <a href="https://ultimateclassicrock.com/billy-joel-live-albums-ranked/" target="_blank">Ultimate Classic Rock</a> &bull; July 2024</p>
+</footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
@@ -137,38 +399,142 @@
   const db = getFirestore(app);
   const docRef = doc(db, "checklists", "billy-joel");
 
+  const albums = [
+    { rank: 11, title: "Kohuept", year: 1987, label: "Columbia", note: "Historic Soviet Union concerts — the first major Western rock shows there — but the performances feel restrained by the occasion." },
+    { rank: 10, title: "Live at Shea Stadium: The Concert", year: 2011, label: "Sony", note: "The final shows at Shea before demolition; a farewell event more than a musical peak, despite the historic setting." },
+    { rank: 9,  title: "2000 Years: The Millennium Concert", year: 2000, label: "Columbia", note: "Madison Square Garden on New Year's Eve 1999; milestone date, solid performance, but feels more like an event album." },
+    { rank: 8,  title: "Live in the Studio – Sigma Studios 1972", year: 2010, label: "Columbia", note: "Archival curiosity from early in his career; raw and rough, for completists rather than casual listeners." },
+    { rank: 7,  title: "Live at Carnegie Hall 1977", year: 2008, label: "Legacy", note: "A confident mid-career showcase recorded between The Stranger and 52nd Street; strong setlist, good sound." },
+    { rank: 6,  title: "A Matter of Trust: The Bridge to Russia", year: 2014, label: "Columbia", note: "Return to Russia in 1987 with a richer production; better performances than Kohuept but lesser mythology." },
+    { rank: 5,  title: "Live at the Great American Music Hall, 1975", year: 2021, label: "Columbia", note: "Intimate club show on the Turnstiles tour; a young band finding its footing, with surprising freshness." },
+    { rank: 4,  title: "Live at Yankee Stadium: June 22 & 23, 1990", year: 2022, label: "Legacy Recordings", note: "Stadium spectacle at commercial peak; two nights of hits delivered with precision if not much spontaneity." },
+    { rank: 3,  title: "Live From Long Island", year: 2023, label: "Legacy Recordings", note: "Nassau Coliseum 1982 — a hometown crowd, an energized band, and a setlist that spans his best decade." },
+    { rank: 2,  title: "12 Gardens Live", year: 2006, label: "Columbia", note: "Two-disc document of 12 MSG residency shows; the definitive late-career statement, polished and expansive." },
+    { rank: 1,  title: "Songs in the Attic", year: 1981, label: "Columbia", note: "The essential Billy Joel live record; early club-era songs played with the full band energy they always deserved." },
+  ];
+
+  const unranked = [
+    { rank: "NR", title: "Live Through the Years", year: 2019, label: "Columbia (digital only)", note: "Anthology compilation spanning decades of live recordings; digital-only release for the streaming era." },
+  ];
+
   const syncStatus = document.getElementById('sync-status');
   let state = {};
+  let activeFilter = 'all';
 
-  // Real-time listener — applies remote state to the UI instantly
+  function iconFor(s)  { return s === 'have' ? '✓' : s === 'need' ? '◯' : '?'; }
+  function labelFor(s) { return s === 'have' ? 'Have It' : s === 'need' ? 'Need It' : 'Unset'; }
+  function cycleStatus(cur) { return !cur ? 'have' : cur === 'have' ? 'need' : null; }
+
+  function buildCard(a, listId) {
+    const list = document.getElementById(listId);
+    const s = state[a.rank] || null;
+    const card = document.createElement('div');
+    card.className = 'album-card' + (s ? ' ' + s : '');
+    card.dataset.rank = a.rank;
+    card.innerHTML = `
+      <div class="status-stripe"></div>
+      <div class="rank-badge">
+        <span class="rank-label">Rank</span>
+        <span class="rank-num">${a.rank}</span>
+      </div>
+      <div class="album-info">
+        <div class="album-title">${a.title}</div>
+        <div class="album-meta">
+          <span class="album-year">${a.year}</span>
+          <span class="album-label">${a.label}</span>
+        </div>
+        <div class="album-note">${a.note}</div>
+      </div>
+      <div class="toggle-wrap">
+        <button class="toggle-btn" title="Click to toggle status">
+          <div class="toggle-icon">${iconFor(s)}</div>
+          <span class="toggle-label">${labelFor(s)}</span>
+        </button>
+      </div>
+    `;
+    card.querySelector('.toggle-btn').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const cur = state[a.rank] || null;
+      const next = cycleStatus(cur);
+      if (next) state[a.rank] = next;
+      else delete state[a.rank];
+      card.className = 'album-card' + (next ? ' ' + next : '');
+      card.querySelector('.toggle-icon').textContent = iconFor(next);
+      card.querySelector('.toggle-label').textContent = labelFor(next);
+      updateStats();
+      applyFilter();
+      syncStatus.textContent = 'Saving…';
+      syncStatus.style.color = '#f5c842';
+      await setDoc(docRef, state, { merge: false });
+    });
+    list.appendChild(card);
+  }
+
+  function renderAll() {
+    document.getElementById('album-list').innerHTML = '';
+    document.getElementById('unranked-list').innerHTML = '';
+    albums.forEach(a => buildCard(a, 'album-list'));
+    unranked.forEach(a => buildCard(a, 'unranked-list'));
+  }
+
+  function updateStats() {
+    let have = 0, need = 0;
+    albums.forEach(a => {
+      const s = state[a.rank];
+      if (s === 'have') have++;
+      if (s === 'need') need++;
+    });
+    document.getElementById('have-num').textContent = have;
+    document.getElementById('need-num').textContent = need;
+    const pct = Math.round((have / albums.length) * 100);
+    document.getElementById('progress-pct').textContent = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  function applyFilter() {
+    document.querySelectorAll('.album-card').forEach(card => {
+      const s = state[card.dataset.rank] || null;
+      const match = (
+        activeFilter === 'all' ||
+        (activeFilter === 'have' && s === 'have') ||
+        (activeFilter === 'need' && s === 'need') ||
+        (activeFilter === 'unset' && !s)
+      );
+      card.classList.toggle('hidden', !match);
+    });
+  }
+
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilter();
+    });
+  });
+
+  document.getElementById('btn-mark-all').addEventListener('click', async () => {
+    albums.forEach(a => { state[a.rank] = 'have'; });
+    renderAll(); updateStats(); applyFilter();
+    await setDoc(docRef, state, { merge: false });
+  });
+
+  document.getElementById('btn-clear-all').addEventListener('click', async () => {
+    state = {};
+    renderAll(); updateStats(); applyFilter();
+    await setDoc(docRef, {}, { merge: false });
+  });
+
+  // Real-time Firebase listener
   onSnapshot(docRef, (snapshot) => {
     state = snapshot.exists() ? snapshot.data() : {};
-    document.querySelectorAll('.album-card').forEach(card => {
-      card.classList.toggle('owned', !!state[card.dataset.id]);
-    });
-    update();
+    renderAll();
+    updateStats();
+    applyFilter();
     syncStatus.textContent = 'Synced';
     syncStatus.style.color = '#2ecc71';
   });
-
-  // Toggle: optimistically update UI, then write to Firestore
-  window.toggle = async function(card) {
-    const id = card.dataset.id;
-    const nowOwned = !card.classList.contains('owned');
-    card.classList.toggle('owned', nowOwned);
-    update();
-    state[id] = nowOwned;
-    syncStatus.textContent = 'Saving…';
-    syncStatus.style.color = '#f5c842';
-    await setDoc(docRef, state, { merge: true });
-  };
-
-  function update() {
-    const all = document.querySelectorAll('.album-card:not(.not-ranked)');
-    const owned = document.querySelectorAll('.album-card:not(.not-ranked).owned').length;
-    document.getElementById('progressBar').style.width = (owned / all.length * 100) + '%';
-    document.getElementById('progressLabel').textContent = owned + ' of ' + all.length + ' owned';
-  }
 </script>
 </body>
 </html>
