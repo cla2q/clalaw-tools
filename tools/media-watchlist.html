@@ -256,7 +256,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -273,13 +273,16 @@
   const db = getFirestore(app);
   const colRef = collection(db, "watchlist");
 
-  // Auth guard
-  const ALLOWED = ['anderson.cl@gmail.com', 'vbrotski@gmail.com', 'anderson.cl@pm.me'];
+  // Auth guard — allowlist managed in Firestore at config/allowed-emails
   document.body.style.visibility = 'hidden';
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       window.location.href = `/tools/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
-    } else if (!ALLOWED.includes(user.email)) {
+      return;
+    }
+    const allowDoc = await getDoc(doc(db, 'config', 'allowed-emails'));
+    const allowed = allowDoc.exists() ? (allowDoc.data().emails || []) : [];
+    if (!allowed.includes(user.email)) {
       await signOut(auth);
       window.location.href = '/tools/login.html?error=unauthorized';
     } else {

@@ -159,7 +159,8 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBfayRskS6VQ8zLMesm3_4ZB1HX84ZbPJ8",
@@ -172,23 +173,35 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  const ALLOWED = ['anderson.cl@gmail.com', 'vbrotski@gmail.com'];
   const params = new URLSearchParams(window.location.search);
   const redirect = params.get('redirect') || '/tools/';
+  const errorMsg = document.getElementById('error-msg');
 
   // Show access denied message if redirected here after an unauthorized attempt
   if (params.get('error') === 'unauthorized') {
-    document.getElementById('error-msg').textContent = 'That Google account does not have access.';
+    errorMsg.textContent = 'That account does not have access.';
+  }
+
+  async function getAllowed() {
+    const allowDoc = await getDoc(doc(db, 'config', 'allowed-emails'));
+    return allowDoc.exists() ? (allowDoc.data().emails || []) : [];
   }
 
   // If already signed in with an allowed account, go straight to destination
-  onAuthStateChanged(auth, (user) => {
-    if (user && ALLOWED.includes(user.email)) window.location.href = redirect;
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const allowed = await getAllowed();
+      if (allowed.includes(user.email)) {
+        window.location.href = redirect;
+      } else {
+        await signOut(auth);
+        errorMsg.textContent = 'That account does not have access.';
+      }
+    }
   });
-
-  const errorMsg = document.getElementById('error-msg');
 
   // Google sign-in
   document.getElementById('google-btn').addEventListener('click', async (e) => {
