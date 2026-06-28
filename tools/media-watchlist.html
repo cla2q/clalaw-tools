@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CLA | Watchlist</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f1a;
+      --surface: #16213e;
+      --surface2: #1e2d55;
+      --border: #2a2a4e;
+      --gold: #f5c842;
+      --text: #e8e8e8;
+      --muted: #888;
+      --green: #2ecc71;
+      --red: #e74c3c;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Georgia, serif;
+      min-height: 100vh;
+      padding: 30px 20px 60px;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    nav a {
+      font-family: Arial, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    nav a:hover { color: var(--gold); }
+    .nav-brand {
+      font-size: 1rem;
+      font-weight: bold;
+      letter-spacing: 3px;
+      color: var(--gold);
+    }
+
+    /* HEADER */
+    header { text-align: center; margin-bottom: 36px; }
+    header h1 { font-size: 1.8rem; color: var(--gold); letter-spacing: 1px; }
+    header p { font-size: 0.9rem; color: var(--muted); margin-top: 6px; }
+
+    /* ADD FORM */
+    .add-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 32px;
+    }
+    .add-form h2 {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-family: Arial, sans-serif;
+    }
+    .form-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .form-row input, .form-row select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-row input:focus, .form-row select:focus {
+      border-color: var(--gold);
+    }
+    .form-row input[name="title"] { flex: 2; min-width: 180px; }
+    .form-row select { flex: 1; min-width: 110px; }
+    .form-row input[name="addedBy"] { flex: 1; min-width: 110px; }
+    .btn {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .btn:hover { opacity: 0.85; }
+
+    /* FILTERS */
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: Arial, sans-serif;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* LIST */
+    .item-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: border-color 0.2s;
+    }
+    .item-card:hover { border-color: #3a3a6e; }
+    .item-card.watched {
+      background: #0d2b1e;
+      border-color: #1a4a30;
+    }
+    .item-card.watched .item-title {
+      text-decoration: line-through;
+      color: #6fcf97;
+    }
+
+    .type-badge {
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: Arial, sans-serif;
+      padding: 3px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .type-badge.movie { background: #2a1a4e; color: #b39ddb; }
+    .type-badge.tv    { background: #1a2a4e; color: #90caf9; }
+    .type-badge.doc   { background: #2a2a1a; color: #fff176; }
+
+    .item-info { flex: 1; }
+    .item-title { font-size: 1rem; font-weight: bold; }
+    .item-meta  { font-size: 0.78rem; color: var(--muted); margin-top: 3px; font-family: Arial, sans-serif; }
+
+    .item-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .icon-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 5px 10px;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .icon-btn.delete:hover { border-color: var(--red); color: var(--red); }
+    .icon-btn.watched-btn:hover { border-color: var(--green); color: var(--green); }
+
+    .empty { text-align: center; color: var(--muted); padding: 40px; font-style: italic; }
+
+    .status-bar {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 28px;
+      font-family: Arial, sans-serif;
+    }
+
+    #loading { text-align: center; color: var(--muted); padding: 30px; font-style: italic; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <nav>
+    <span class="nav-brand">CLA <span style="color:#333">|</span> LAW</span>
+    <a href="/tools/">← Tools</a>
+  </nav>
+
+  <header>
+    <h1>🎬 Watchlist</h1>
+    <p>Movies, TV, and docs to watch together.</p>
+  </header>
+
+  <div class="add-form">
+    <h2>Add something</h2>
+    <div class="form-row">
+      <input name="title" type="text" placeholder="Title" id="titleInput" />
+      <select id="typeInput">
+        <option value="movie">Movie</option>
+        <option value="tv">TV</option>
+        <option value="doc">Doc</option>
+      </select>
+      <input name="addedBy" type="text" placeholder="Added by" id="addedByInput" />
+      <button class="btn" onclick="addItem()">Add</button>
+    </div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFilter('unwatched', this)">To Watch</button>
+    <button class="filter-btn" onclick="setFilter('movie', this)">Movies</button>
+    <button class="filter-btn" onclick="setFilter('tv', this)">TV</button>
+    <button class="filter-btn" onclick="setFilter('doc', this)">Docs</button>
+    <button class="filter-btn" onclick="setFilter('watched', this)">Watched</button>
+  </div>
+
+  <div id="loading">Loading watchlist…</div>
+  <div class="item-list" id="itemList"></div>
+  <div class="status-bar" id="statusBar"></div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfayRskS6VQ8zLMesm3_4ZB1HX84ZbPJ8",
+    authDomain: "clalaw-media-watchlist.firebaseapp.com",
+    projectId: "clalaw-media-watchlist",
+    storageBucket: "clalaw-media-watchlist.firebasestorage.app",
+    messagingSenderId: "980630708974",
+    appId: "1:980630708974:web:8e3d0f9a0d9848b2df49ff"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const colRef = collection(db, "watchlist");
+
+  let allItems = [];
+  let currentFilter = 'all';
+
+  // Real-time listener
+  const q = query(colRef, orderBy("createdAt", "desc"));
+  onSnapshot(q, (snapshot) => {
+    allItems = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    document.getElementById('loading').style.display = 'none';
+    render();
+  });
+
+  function render() {
+    const list = document.getElementById('itemList');
+    const filtered = allItems.filter(item => {
+      if (currentFilter === 'all') return true;
+      if (currentFilter === 'watched') return item.watched;
+      if (currentFilter === 'unwatched') return !item.watched;
+      return item.type === currentFilter && !item.watched;
+    });
+
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="empty">Nothing here yet.</div>';
+    } else {
+      list.innerHTML = filtered.map(item => `
+        <div class="item-card ${item.watched ? 'watched' : ''}">
+          <span class="type-badge ${item.type}">${item.type}</span>
+          <div class="item-info">
+            <div class="item-title">${escHtml(item.title)}</div>
+            <div class="item-meta">Added by ${escHtml(item.addedBy || 'unknown')}</div>
+          </div>
+          <div class="item-actions">
+            <button class="icon-btn watched-btn" onclick="toggleWatched('${item.id}', ${item.watched})" title="${item.watched ? 'Mark unwatched' : 'Mark watched'}">
+              ${item.watched ? '↩' : '✓'}
+            </button>
+            <button class="icon-btn delete" onclick="removeItem('${item.id}')" title="Delete">✕</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    const total = allItems.length;
+    const watched = allItems.filter(i => i.watched).length;
+    document.getElementById('statusBar').textContent = `${watched} of ${total} watched`;
+  }
+
+  window.addItem = async function() {
+    const title = document.getElementById('titleInput').value.trim();
+    const type = document.getElementById('typeInput').value;
+    const addedBy = document.getElementById('addedByInput').value.trim() || 'someone';
+    if (!title) return;
+    await addDoc(colRef, { title, type, addedBy, watched: false, createdAt: serverTimestamp() });
+    document.getElementById('titleInput').value = '';
+  };
+
+  window.toggleWatched = async function(id, current) {
+    await updateDoc(doc(db, 'watchlist', id), { watched: !current });
+  };
+
+  window.removeItem = async function(id) {
+    if (confirm('Remove this from the list?')) {
+      await deleteDoc(doc(db, 'watchlist', id));
+    }
+  };
+
+  window.setFilter = function(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  };
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Enter key on title input
+  document.getElementById('titleInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.addItem();
+  });
+</script>
+</body>
+</html>
