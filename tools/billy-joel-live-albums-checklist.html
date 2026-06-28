@@ -26,18 +26,29 @@
     .album-year { font-size: 0.8rem; color: #888; margin-top: 3px; }
     .checkbox { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #555; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; color: transparent; transition: border-color 0.2s, background 0.2s; }
     .album-card.owned .checkbox { border-color: #2ecc71; background: #2ecc71; color: #fff; }
+    #sync-status { text-align: center; font-size: 0.75rem; color: #555; margin-bottom: 16px; font-family: Arial, sans-serif; letter-spacing: 1px; }
+    nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 16px; border-bottom: 1px solid #2a2a4e; }
+    nav a { font-family: Arial, sans-serif; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: #888; text-decoration: none; }
+    nav a:hover { color: #f5c842; }
+    .nav-brand { font-size: 1rem; font-weight: bold; letter-spacing: 3px; color: #f5c842; }
     footer { text-align: center; margin-top: 36px; font-size: 0.78rem; color: #555; }
     footer a { color: #777; }
   </style>
 </head>
 <body>
 <div class="container">
+  <nav>
+    <span class="nav-brand">CLA <span style="color:#333">|</span> LAW</span>
+    <a href="/tools/">← Tools</a>
+  </nav>
   <header>
     <h1>&#127929; Billy Joel Live Albums</h1>
     <p>Collection Checklist &mdash; Ranked Worst to Best</p>
     <div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
     <div class="progress-label" id="progressLabel">0 of 11 owned</div>
   </header>
+
+  <div id="sync-status">Connecting…</div>
 
   <div class="section-label">&#9660; Worst</div>
 
@@ -108,25 +119,56 @@
 
   <footer>Ranked by <a href="https://ultimateclassicrock.com/billy-joel-live-albums-ranked/" target="_blank">Ultimate Classic Rock</a> &bull; July 2024</footer>
 </div>
-<script>
-  const K = 'bjLiveChecklist';
-  function load() { try { return JSON.parse(localStorage.getItem(K)) || {}; } catch(e) { return {}; } }
-  function save(s) { localStorage.setItem(K, JSON.stringify(s)); }
-  function toggle(card) {
-    card.classList.toggle('owned');
-    const s = load(); s[card.dataset.id] = card.classList.contains('owned'); save(s); update();
-  }
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfayRskS6VQ8zLMesm3_4ZB1HX84ZbPJ8",
+    authDomain: "clalaw-media-watchlist.firebaseapp.com",
+    projectId: "clalaw-media-watchlist",
+    storageBucket: "clalaw-media-watchlist.firebasestorage.app",
+    messagingSenderId: "980630708974",
+    appId: "1:980630708974:web:8e3d0f9a0d9848b2df49ff"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const docRef = doc(db, "checklists", "billy-joel");
+
+  const syncStatus = document.getElementById('sync-status');
+  let state = {};
+
+  // Real-time listener — applies remote state to the UI instantly
+  onSnapshot(docRef, (snapshot) => {
+    state = snapshot.exists() ? snapshot.data() : {};
+    document.querySelectorAll('.album-card').forEach(card => {
+      card.classList.toggle('owned', !!state[card.dataset.id]);
+    });
+    update();
+    syncStatus.textContent = 'Synced';
+    syncStatus.style.color = '#2ecc71';
+  });
+
+  // Toggle: optimistically update UI, then write to Firestore
+  window.toggle = async function(card) {
+    const id = card.dataset.id;
+    const nowOwned = !card.classList.contains('owned');
+    card.classList.toggle('owned', nowOwned);
+    update();
+    state[id] = nowOwned;
+    syncStatus.textContent = 'Saving…';
+    syncStatus.style.color = '#f5c842';
+    await setDoc(docRef, state, { merge: true });
+  };
+
   function update() {
     const all = document.querySelectorAll('.album-card:not(.not-ranked)');
     const owned = document.querySelectorAll('.album-card:not(.not-ranked).owned').length;
     document.getElementById('progressBar').style.width = (owned / all.length * 100) + '%';
     document.getElementById('progressLabel').textContent = owned + ' of ' + all.length + ' owned';
   }
-  (function() {
-    const s = load();
-    document.querySelectorAll('.album-card').forEach(c => { if (s[c.dataset.id]) c.classList.add('owned'); });
-    update();
-  })();
 </script>
 </body>
 </html>
