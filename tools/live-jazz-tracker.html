@@ -11,8 +11,30 @@
     color: #eee;
     font-family: 'Segoe UI', Arial, sans-serif;
     min-height: 100vh;
-    padding: 30px 16px 60px;
+    padding: 24px 16px 60px;
   }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 700px;
+    margin: 0 auto 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  nav a {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: #f5a623; }
+  .nav-brand { font-size: 1rem; font-weight: bold; letter-spacing: 3px; color: #f5a623; }
+
   header {
     text-align: center;
     margin-bottom: 28px;
@@ -25,11 +47,7 @@
     text-transform: uppercase;
     color: #fff;
   }
-  header p {
-    color: #888;
-    font-size: 0.9rem;
-    margin-top: 6px;
-  }
+  header p { color: #888; font-size: 0.9rem; margin-top: 6px; }
 
   /* Stats */
   .stats {
@@ -47,46 +65,19 @@
     text-align: center;
     min-width: 110px;
   }
-  .stat-box .num {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #f5a623;
-    display: block;
-  }
-  .stat-box .label {
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    color: #888;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
+  .stat-box .num { font-size: 2rem; font-weight: 800; color: #f5a623; display: block; }
+  .stat-box .label { font-size: 0.68rem; letter-spacing: 0.1em; color: #888; text-transform: uppercase; margin-top: 2px; }
   .stat-box.have .num { color: #4caf50; }
   .stat-box.need .num { color: #e53935; }
 
   /* Progress bar */
-  .progress-wrap {
-    max-width: 680px;
-    margin: 0 auto 22px;
-  }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.78rem;
-    color: #888;
-    margin-bottom: 5px;
-  }
-  .progress-track {
-    background: #333;
-    border-radius: 99px;
-    height: 10px;
-    overflow: hidden;
-  }
-  .progress-bar {
-    background: #4caf50;
-    height: 100%;
-    border-radius: 99px;
-    transition: width 0.4s ease;
-  }
+  .progress-wrap { max-width: 680px; margin: 0 auto 22px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: #888; margin-bottom: 5px; }
+  .progress-track { background: #333; border-radius: 99px; height: 10px; overflow: hidden; }
+  .progress-bar { background: #4caf50; height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+
+  /* Sync status */
+  #sync-status { text-align: center; font-size: 0.72rem; color: #555; margin-bottom: 16px; letter-spacing: 1px; }
 
   /* Filters & bulk actions */
   .controls {
@@ -108,12 +99,7 @@
     transition: all 0.15s;
   }
   .filter-btn:hover { background: #2e2e2e; }
-  .filter-btn.active {
-    background: #e53935;
-    border-color: #e53935;
-    color: #fff;
-    font-weight: 700;
-  }
+  .filter-btn.active { background: #e53935; border-color: #e53935; color: #fff; font-weight: 700; }
   .bulk-btn {
     background: #222;
     border: 1px solid #444;
@@ -148,31 +134,15 @@
   .album-card:hover { border-color: #444; }
   .album-card.state-have { border-color: #2e7d32; background: #0f1f10; }
   .album-card.state-need { border-color: #7f1e1e; background: #1f0f0f; }
-  .album-card[style*="display:none"] { display: none !important; }
+  .album-card.hidden { display: none; }
 
-  .rank-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 40px;
-  }
+  .rank-col { display: flex; flex-direction: column; align-items: center; min-width: 40px; }
   .rank-label { font-size: 0.58rem; letter-spacing: 0.1em; color: #555; text-transform: uppercase; }
   .rank-num { font-size: 1.5rem; font-weight: 900; color: #444; line-height: 1; }
 
   .info-col { flex: 1; min-width: 0; }
-  .album-title {
-    font-size: 0.97rem;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.3;
-  }
-  .album-meta {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-top: 4px;
-    flex-wrap: wrap;
-  }
+  .album-title { font-size: 0.97rem; font-weight: 700; color: #fff; line-height: 1.3; }
+  .album-meta { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
   .badge-year {
     background: #2d2d2d;
     border: 1px solid #3a3a3a;
@@ -182,16 +152,8 @@
     color: #ccc;
     font-weight: 600;
   }
-  .badge-label {
-    font-size: 0.72rem;
-    color: #777;
-  }
-  .album-desc {
-    font-size: 0.78rem;
-    color: #666;
-    margin-top: 4px;
-    line-height: 1.4;
-  }
+  .badge-label { font-size: 0.72rem; color: #777; }
+  .album-desc { font-size: 0.78rem; color: #666; margin-top: 4px; line-height: 1.4; }
 
   .action-col { display: flex; flex-direction: column; align-items: center; min-width: 62px; }
   .toggle-btn {
@@ -209,13 +171,7 @@
   }
   .state-have .toggle-btn { background: #2e7d32; border-color: #4caf50; }
   .state-need .toggle-btn { background: #7f1e1e; border-color: #e53935; }
-  .toggle-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-top: 4px;
-    color: #555;
-  }
+  .toggle-label { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; color: #555; }
   .state-have .toggle-label { color: #4caf50; }
   .state-need .toggle-label { color: #e53935; }
 
@@ -226,6 +182,11 @@
 </style>
 </head>
 <body>
+
+<nav>
+  <span class="nav-brand">CLA <span style="color:#333">|</span> LAW</span>
+  <a href="/tools/">← Tools</a>
+</nav>
 
 <header>
   <span class="emoji">🎷</span>
@@ -258,6 +219,8 @@
   </div>
 </div>
 
+<div id="sync-status">Connecting…</div>
+
 <div class="controls">
   <button class="filter-btn active" data-filter="all">All (50)</button>
   <button class="filter-btn" data-filter="have">Have It</button>
@@ -267,190 +230,193 @@
   <button class="bulk-btn" id="btn-clear">✕ Clear All</button>
 </div>
 
-<div class="album-list" id="album-list">
-  <!-- Cards injected by JS -->
-</div>
+<div class="album-list" id="album-list"></div>
 
-<script>
-const albums = [
-  { rank:1,  title:"Art Blakey Quintet: A Night At Birdland",             label:"Blue Note",  year:"1954", sub:"Birdland, New York City",                   desc:"Hard bop powerhouse; Horace Silver, Clifford Brown & Lou Donaldson ignite a legendary Big Apple club night." },
-  { rank:2,  title:"Grant Green: Live At The Lighthouse",                  label:"Blue Note",  year:"1972", sub:"Hermosa Beach, California",                  desc:"Double LP of combustible funk-jazz; a blistering 12-minute 'Windjammer' is the undisputed centrepiece." },
-  { rank:3,  title:"Benny Goodman: Live At Carnegie Hall",                  label:"Columbia",   year:"1950", sub:"Carnegie Hall, January 1938",                desc:"The concert that gave jazz legitimacy; Lionel Hampton, Harry James & Gene Krupa alongside Count Basie guests." },
-  { rank:4,  title:"Stanley Turrentine: Up At Minton's",                   label:"Blue Note",  year:"1961", sub:"Minton's Playhouse, Harlem, 1961",           desc:"Soul jazz at its finger-clicking best; Grant Green on guitar, Horace Parlan on piano, pure Harlem groove." },
-  { rank:5,  title:"Dave Brubeck Quartet: Jazz At Oberlin",                 label:"Fantasy",    year:"1953", sub:"Oberlin College, Ohio",                      desc:"Early cool jazz milestone; Paul Desmond's dry-martini alto anchors a quartet performing for a college crowd." },
-  { rank:6,  title:"Eric Dolphy: Live At The Five Spot",                   label:"New Jazz",   year:"1961", sub:"The Five Spot, New York City, 1961",         desc:"Dolphy co-leads with Booker Little, alternating alto, clarinet & flute while stretching bebop to its limits." },
-  { rank:7,  title:"Charles Mingus: Mingus In Antibes",                    label:"Atlantic",   year:"1960", sub:"Juan-les-Pins Festival, France, 1960",       desc:"Mingus at peak power with Eric Dolphy; complete concert finally issued featuring 'Wednesday Night Prayer Meeting'." },
-  { rank:8,  title:"Miles Davis & Quincy Jones: Miles And Quincy Live At Montreux", label:"Warner Bros", year:"1993", sub:"Montreux Jazz Festival, 1991",     desc:"Miles' final recording; revisiting Gil Evans big-band era for the only time, conducted by Quincy Jones." },
-  { rank:9,  title:"Pat Metheny Group: Travels",                           label:"ECM",        year:"1983", sub:"USA Tour, 1982",                             desc:"Metheny's debut live album; 'Are You Going With Me' through guitar synth remains his signature moment." },
-  { rank:10, title:"Stan Getz: At The Shrine",                             label:"Norgran",    year:"1955", sub:"Shrine Auditorium, Los Angeles, 1954",       desc:"Getz's first live album; silky west-coast cool with Bob Brookmeyer on trombone, eight songs of pure class." },
-  { rank:11, title:"Louis Armstrong & The All Stars: Satchmo At Symphony Hall", label:"Decca",  year:"1947", sub:"Symphony Hall, Boston, 1947",              desc:"Satchmo's All Stars in blazing form; 'Mahogany Stomp' and 'The Sunny Side Of The Street' are highlights." },
-  { rank:12, title:"Various Artists: Jazz At Hollywood Bowl",              label:"Verve",      year:"1956", sub:"Hollywood Bowl, 1956",                      desc:"20,000 fans, Ella, Satchmo, Tatum, Peterson & Rich at the first-ever official jazz concert at the Bowl." },
-  { rank:13, title:"Frank Sinatra & Count Basie: Sinatra At The Sands",   label:"Reprise",    year:"1966", sub:"The Sands, Las Vegas",                       desc:"Sinatra's first live album; the Basie band is hard-swinging perfection behind a Chairman at the top of his game." },
-  { rank:14, title:"Benny Carter: Live And Well In Japan!",               label:"Pablo",      year:"1978", sub:"Kosei Nenkin Hall, Tokyo, 1977",             desc:"Carter at 69, alternating trumpet and alto sax with an ace nine-piece band; the crowd claps along joyfully." },
-  { rank:15, title:"The Ornette Coleman Trio: At The Golden Circle, Stockholm", label:"Blue Note", year:"1966", sub:"Gyllene Cirkeln, Stockholm, December 1965", desc:"Two-volume free jazz testament; Coleman on alto, violin & trumpet redefines texture, tone and feeling." },
-  { rank:16, title:"John Coltrane: Live At Birdland",                     label:"Impulse!",   year:"1964", sub:"Birdland, New York City",                   desc:"Classic quartet live; includes 'Afro Blue,' 'I Want To Talk About You,' and the haunting studio cut 'Alabama'." },
-  { rank:17, title:"Miles Davis: Birdland",                               label:"Blue Note",  year:"1951", sub:"Birdland, New York City, 1951",              desc:"Radio broadcasts finally officially released; Miles, Blakey, Rollins, Mingus & Lockjaw Davis on fire." },
-  { rank:18, title:"Kenny Dorham: Round About Midnight At The Cafe Bohemia", label:"Blue Note", year:"1956", sub:"Café Bohemia, New York City",              desc:"Dorham's first live date; a relaxed, lyrical post-bop quintet with Bobby Timmons and J.R. Montrose." },
-  { rank:19, title:"Stephane Grappelli: Tivoli Gardens, Copenhagen, Denmark", label:"Pablo",   year:"1980", sub:"Tivoli Gardens, Copenhagen, 1979",         desc:"Grappelli at 71 in a trio with Joe Pass and NHØP; 43 minutes of spellbinding standards and spontaneous swing." },
-  { rank:20, title:"Billie Holiday: The Essential Billie Holiday: The Carnegie Hall Concert", label:"Verve", year:"1962", sub:"Carnegie Hall, New York, 1956", desc:"Recorded two and a half years before her death; a deeper, emotionally richer Holiday on twelve classic tunes." },
-  { rank:21, title:"Diana Krall: Live In Paris",                          label:"Verve",      year:"2002", sub:"Olympia, Paris, 2001",                      desc:"Krall's quartet occasionally joined by a symphony orchestra; swinging, elegant, and remarkably assured." },
-  { rank:22, title:"Gene Krupa & Buddy Rich: At JATP: The Drum Battle",  label:"Verve",      year:"1960", sub:"Carnegie Hall, New York, 1952",              desc:"Two drum legends put music before ego; Ella, Lester Young and Oscar Peterson round out an all-star night." },
-  { rank:23, title:"Shelly Manne & His Men: At The Black Hawk",          label:"Contemporary", year:"1960", sub:"Black Hawk, San Francisco, 1959",          desc:"West-coast cool at its warmest; Victor Feldman on piano, Joe Gordon's muted trumpet on 'Summertime'." },
-  { rank:24, title:"John McLaughlin: The Heart Of Things: Live In Paris", label:"Verve",      year:"2000", sub:"Le Cigale, Paris, November 1998",            desc:"Fleet-fingered fusion with Gary Thomas, Matthew Garrison & Dennis Chambers; 'Fallen Angels' aches with lyricism." },
-  { rank:25, title:"The Modern Jazz Quartet: The Last Concert",           label:"Atlantic",   year:"1975", sub:"Avery Fisher Hall, New York, 1974",          desc:"The MJQ's final night; 'Django,' 'Bag's Groove,' and a shimmering 'Round Midnight' as farewell." },
-  { rank:26, title:"Gerry Mulligan and The Concert Jazz Band: At The Village Vanguard", label:"Verve", year:"1960", sub:"Village Vanguard, New York, December 1960", desc:"Mulligan's 11-piece band with Clark Terry; inventive arrangements where solo passages meet tight ensemble work." },
-  { rank:27, title:"The Oscar Peterson Trio: At The Concertgebouw",      label:"Verve",      year:"1958", sub:"Concertgebouw, Amsterdam, Spring 1958",      desc:"Herb Ellis on guitar, Ray Brown on bass; Granz called it 'the most exciting trio music I've heard in years'." },
-  { rank:28, title:"Jimmy Smith: Groovin' At Smalls' Paradise",          label:"Blue Note",  year:"1958", sub:"Small's Paradise, Harlem, 1957",             desc:"Hammond organ showman in full flight; Dizzy Gillespie's 'The Champ' at insanely fast but fluent speed." },
-  { rank:29, title:"Weather Report: Live In Tokyo",                      label:"Columbia",   year:"1972", sub:"Tokyo, Japan, 1972",                         desc:"Early avant-garde fusion; Zawinul on acoustic/electric piano, Shorter on sax, near-telepathic group interaction." },
-  { rank:30, title:"Mary Lou Williams Trio: At Rick's Cafe Americain",   label:"Storyville", year:"1999", sub:"Rick's Cafe Americain, Chicago, 1979",       desc:"Prolific composer-arranger on piano just two years before her death; bebop fluency, swing, and elegance intact." },
-  { rank:31, title:"Various: Jazz At The Philharmonic Bird & Pres: The '46 Concerts", label:"Verve", year:"1977", sub:"JATP Concerts, 1946",                desc:"Charlie Parker meets Lester Young across three 1946 JATP concerts; Dizzy, Buddy Rich & Coleman Hawkins also star." },
-  { rank:32, title:"Bill Laurance: Live At Union Chapel",                label:"Ground UP",  year:"2016", sub:"Union Chapel, London, May 2015",             desc:"Snarky Puppy keyboardist goes solo with Michael League, 'Sput' Seawright and a full orchestra in a stunning London church." },
-  { rank:33, title:"Snarky Puppy: Sylva",                               label:"Impulse!",   year:"2015", sub:"Dordrecht, Holland, April 2014",             desc:"Grammy-winning collaboration with Metropole Orkest; Jules Buckley's widescreen arrangements lift the band to epic scale." },
-  { rank:34, title:"Thelonious Monk Quartet With John Coltrane: At Carnegie Hall", label:"Blue Note", year:"2005", sub:"Carnegie Hall, New York, November 1957", desc:"Lost for 48 years in the Library of Congress; a reborn Coltrane shines alongside Monk in a landmark concert." },
-  { rank:35, title:"Cecil Taylor: Live At Cafe Montmartre",             label:"Debut",      year:"1963", sub:"Café Montmartre, Copenhagen, late 1962",     desc:"Avant-garde piano at its most visceral; Jimmy Lyons on sax and Arthur Murray on drums give full support." },
-  { rank:36, title:"Ahmad Jamal: But Not For Me: Live At The Pershing", label:"Argo",       year:"1958", sub:"Pershing Hotel, Chicago",                    desc:"Delicate touch and masterful use of space; 'Poinciana' became a signature and the album sold over a million copies." },
-  { rank:37, title:"Anita O'Day: At Mr Kelly's",                        label:"Verve",      year:"1958", sub:"Mr Kelly's, Chicago, April 1958",            desc:"O'Day in spectacular form; breakneck 'Tea For Two' scat shows she improvises like a horn player." },
-  { rank:38, title:"Nina Simone: In Concert",                           label:"Philips",    year:"1964", sub:"Carnegie Hall, New York, Spring 1964",       desc:"Three Carnegie Hall nights yielding 'Mississippi Goddam' and Simone's metamorphosis into protest singer." },
-  { rank:39, title:"Dinah Washington with Clifford Brown: Dinah Jams",  label:"Emarcy",     year:"1954", sub:"Hollywood, August 14, 1954",                 desc:"Studio session with live audience; 'Miss D' and rising star Clifford Brown with Maynard Ferguson and Max Roach." },
-  { rank:40, title:"Dave Grusin Presents GRP All-Star Big Band: Live!", label:"GRP",        year:"1993", sub:"Gotanda Kan-i Hoken Hall, Tokyo, January 1993", desc:"17-piece all-star ensemble takes on Rollins' 'Oleo' and Coltrane's 'Blue Train' with raw power and velvet finesse." },
-  { rank:41, title:"Bill Evans: Sunday At The Village Vanguard",        label:"Riverside",  year:"1961", sub:"Village Vanguard, New York, June 1961",      desc:"Arguably Evans' finest; Scott LaFaro (died ten days later) and Paul Motian create democratic trio interaction." },
-  { rank:42, title:"John Coltrane: At The Village Vanguard",            label:"Impulse!",   year:"1961", sub:"Village Vanguard, New York, November 1961",  desc:"Coltrane's first live album; Eric Dolphy augments the quartet on 'Spiritual,' leading towards A Love Supreme." },
-  { rank:43, title:"Miles Davis & Thelonious Monk: Miles & Monk Live At Newport", label:"Columbia", year:"1964", sub:"Newport Jazz Festival, 1958 & 1963",  desc:"Miles' '58 sextet with Coltrane and Evans faces Monk's '63 quartet; two genius approaches in vivid contrast." },
-  { rank:44, title:"The Quintet: Jazz At Massey Hall",                  label:"Debut",      year:"1956", sub:"Massey Hall, Toronto, May 15, 1953",         desc:"The last time Parker, Gillespie, Powell & Roach played together; Mingus issued this bebop summit on his own label." },
-  { rank:45, title:"Erroll Garner: Concert By The Sea",                 label:"Columbia",   year:"1955", sub:"Sunset School, Carmel, California, September 1955", desc:"Accidentally recorded by a US serviceman; over a million copies sold, a flamboyant pianist at his very best." },
-  { rank:46, title:"Wynton Kelly Trio and Wes Montgomery: Smokin' At The Half Note", label:"Verve", year:"1965", sub:"Half Note, New York, June 1965",     desc:"Kind Of Blue rhythm section backs Montgomery at his peak; 'Four On Six' and 'Unit 7' are standout moments." },
-  { rank:47, title:"Duke Ellington & His Orchestra: At Newport",        label:"Columbia",   year:"1956", sub:"Newport Jazz Festival, 1956",                desc:"Career-reviving Newport appearance; Paul Gonsalves blows a historic 27-chorus solo on 'Diminuendo And Crescendo In Blue'." },
-  { rank:48, title:"Sonny Rollins: A Night At The Village Vanguard",   label:"Blue Note",  year:"1958", sub:"Village Vanguard, New York, November 1957",  desc:"Piano-less trio gives Rollins harmonic freedom; genius-level extemporization from a gushing fount of endless melody." },
-  { rank:49, title:"Ella Fitzgerald: Ella in Berlin: Mack The Knife",  label:"Verve",      year:"1960", sub:"Deutschlandhalle, Berlin, February 1960",    desc:"Ella forgets the words to 'Mack The Knife' and turns the moment into a breathtaking scat improvisation." },
-  { rank:50, title:"Keith Jarrett: The Köln Concert",                  label:"ECM",         year:"1975", sub:"Cologne, January 24, 1975",                  desc:"Jarrett's magnum opus; long solo piano improvisations of spellbinding beauty that define his genius." },
-];
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-const STORAGE_KEY = 'live-jazz-tracker-v1';
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfayRskS6VQ8zLMesm3_4ZB1HX84ZbPJ8",
+    authDomain: "clalaw-media-watchlist.firebaseapp.com",
+    projectId: "clalaw-media-watchlist",
+    storageBucket: "clalaw-media-watchlist.firebasestorage.app",
+    messagingSenderId: "980630708974",
+    appId: "1:980630708974:web:8e3d0f9a0d9848b2df49ff"
+  };
 
-function loadStates() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
-}
-function saveStates(s) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-}
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const docRef = doc(db, "checklists", "live-jazz");
 
-let states = loadStates();
-let currentFilter = 'all';
+  const albums = [
+    { rank:1,  title:"Art Blakey Quintet: A Night At Birdland",             label:"Blue Note",  year:"1954", sub:"Birdland, New York City",                   desc:"Hard bop powerhouse; Horace Silver, Clifford Brown & Lou Donaldson ignite a legendary Big Apple club night." },
+    { rank:2,  title:"Grant Green: Live At The Lighthouse",                  label:"Blue Note",  year:"1972", sub:"Hermosa Beach, California",                  desc:"Double LP of combustible funk-jazz; a blistering 12-minute 'Windjammer' is the undisputed centrepiece." },
+    { rank:3,  title:"Benny Goodman: Live At Carnegie Hall",                  label:"Columbia",   year:"1950", sub:"Carnegie Hall, January 1938",                desc:"The concert that gave jazz legitimacy; Lionel Hampton, Harry James & Gene Krupa alongside Count Basie guests." },
+    { rank:4,  title:"Stanley Turrentine: Up At Minton's",                   label:"Blue Note",  year:"1961", sub:"Minton's Playhouse, Harlem, 1961",           desc:"Soul jazz at its finger-clicking best; Grant Green on guitar, Horace Parlan on piano, pure Harlem groove." },
+    { rank:5,  title:"Dave Brubeck Quartet: Jazz At Oberlin",                 label:"Fantasy",    year:"1953", sub:"Oberlin College, Ohio",                      desc:"Early cool jazz milestone; Paul Desmond's dry-martini alto anchors a quartet performing for a college crowd." },
+    { rank:6,  title:"Eric Dolphy: Live At The Five Spot",                   label:"New Jazz",   year:"1961", sub:"The Five Spot, New York City, 1961",         desc:"Dolphy co-leads with Booker Little, alternating alto, clarinet & flute while stretching bebop to its limits." },
+    { rank:7,  title:"Charles Mingus: Mingus In Antibes",                    label:"Atlantic",   year:"1960", sub:"Juan-les-Pins Festival, France, 1960",       desc:"Mingus at peak power with Eric Dolphy; complete concert finally issued featuring 'Wednesday Night Prayer Meeting'." },
+    { rank:8,  title:"Miles Davis & Quincy Jones: Miles And Quincy Live At Montreux", label:"Warner Bros", year:"1993", sub:"Montreux Jazz Festival, 1991",     desc:"Miles' final recording; revisiting Gil Evans big-band era for the only time, conducted by Quincy Jones." },
+    { rank:9,  title:"Pat Metheny Group: Travels",                           label:"ECM",        year:"1983", sub:"USA Tour, 1982",                             desc:"Metheny's debut live album; 'Are You Going With Me' through guitar synth remains his signature moment." },
+    { rank:10, title:"Stan Getz: At The Shrine",                             label:"Norgran",    year:"1955", sub:"Shrine Auditorium, Los Angeles, 1954",       desc:"Getz's first live album; silky west-coast cool with Bob Brookmeyer on trombone, eight songs of pure class." },
+    { rank:11, title:"Louis Armstrong & The All Stars: Satchmo At Symphony Hall", label:"Decca",  year:"1947", sub:"Symphony Hall, Boston, 1947",              desc:"Satchmo's All Stars in blazing form; 'Mahogany Stomp' and 'The Sunny Side Of The Street' are highlights." },
+    { rank:12, title:"Various Artists: Jazz At Hollywood Bowl",              label:"Verve",      year:"1956", sub:"Hollywood Bowl, 1956",                      desc:"20,000 fans, Ella, Satchmo, Tatum, Peterson & Rich at the first-ever official jazz concert at the Bowl." },
+    { rank:13, title:"Frank Sinatra & Count Basie: Sinatra At The Sands",   label:"Reprise",    year:"1966", sub:"The Sands, Las Vegas",                       desc:"Sinatra's first live album; the Basie band is hard-swinging perfection behind a Chairman at the top of his game." },
+    { rank:14, title:"Benny Carter: Live And Well In Japan!",               label:"Pablo",      year:"1978", sub:"Kosei Nenkin Hall, Tokyo, 1977",             desc:"Carter at 69, alternating trumpet and alto sax with an ace nine-piece band; the crowd claps along joyfully." },
+    { rank:15, title:"The Ornette Coleman Trio: At The Golden Circle, Stockholm", label:"Blue Note", year:"1966", sub:"Gyllene Cirkeln, Stockholm, December 1965", desc:"Two-volume free jazz testament; Coleman on alto, violin & trumpet redefines texture, tone and feeling." },
+    { rank:16, title:"John Coltrane: Live At Birdland",                     label:"Impulse!",   year:"1964", sub:"Birdland, New York City",                   desc:"Classic quartet live; includes 'Afro Blue,' 'I Want To Talk About You,' and the haunting studio cut 'Alabama'." },
+    { rank:17, title:"Miles Davis: Birdland",                               label:"Blue Note",  year:"1951", sub:"Birdland, New York City, 1951",              desc:"Radio broadcasts finally officially released; Miles, Blakey, Rollins, Mingus & Lockjaw Davis on fire." },
+    { rank:18, title:"Kenny Dorham: Round About Midnight At The Cafe Bohemia", label:"Blue Note", year:"1956", sub:"Café Bohemia, New York City",              desc:"Dorham's first live date; a relaxed, lyrical post-bop quintet with Bobby Timmons and J.R. Montrose." },
+    { rank:19, title:"Stephane Grappelli: Tivoli Gardens, Copenhagen, Denmark", label:"Pablo",   year:"1980", sub:"Tivoli Gardens, Copenhagen, 1979",         desc:"Grappelli at 71 in a trio with Joe Pass and NHØP; 43 minutes of spellbinding standards and spontaneous swing." },
+    { rank:20, title:"Billie Holiday: The Essential Billie Holiday: The Carnegie Hall Concert", label:"Verve", year:"1962", sub:"Carnegie Hall, New York, 1956", desc:"Recorded two and a half years before her death; a deeper, emotionally richer Holiday on twelve classic tunes." },
+    { rank:21, title:"Diana Krall: Live In Paris",                          label:"Verve",      year:"2002", sub:"Olympia, Paris, 2001",                      desc:"Krall's quartet occasionally joined by a symphony orchestra; swinging, elegant, and remarkably assured." },
+    { rank:22, title:"Gene Krupa & Buddy Rich: At JATP: The Drum Battle",  label:"Verve",      year:"1960", sub:"Carnegie Hall, New York, 1952",              desc:"Two drum legends put music before ego; Ella, Lester Young and Oscar Peterson round out an all-star night." },
+    { rank:23, title:"Shelly Manne & His Men: At The Black Hawk",          label:"Contemporary", year:"1960", sub:"Black Hawk, San Francisco, 1959",          desc:"West-coast cool at its warmest; Victor Feldman on piano, Joe Gordon's muted trumpet on 'Summertime'." },
+    { rank:24, title:"John McLaughlin: The Heart Of Things: Live In Paris", label:"Verve",      year:"2000", sub:"Le Cigale, Paris, November 1998",            desc:"Fleet-fingered fusion with Gary Thomas, Matthew Garrison & Dennis Chambers; 'Fallen Angels' aches with lyricism." },
+    { rank:25, title:"The Modern Jazz Quartet: The Last Concert",           label:"Atlantic",   year:"1975", sub:"Avery Fisher Hall, New York, 1974",          desc:"The MJQ's final night; 'Django,' 'Bag's Groove,' and a shimmering 'Round Midnight' as farewell." },
+    { rank:26, title:"Gerry Mulligan and The Concert Jazz Band: At The Village Vanguard", label:"Verve", year:"1960", sub:"Village Vanguard, New York, December 1960", desc:"Mulligan's 11-piece band with Clark Terry; inventive arrangements where solo passages meet tight ensemble work." },
+    { rank:27, title:"The Oscar Peterson Trio: At The Concertgebouw",      label:"Verve",      year:"1958", sub:"Concertgebouw, Amsterdam, Spring 1958",      desc:"Herb Ellis on guitar, Ray Brown on bass; Granz called it 'the most exciting trio music I've heard in years'." },
+    { rank:28, title:"Jimmy Smith: Groovin' At Smalls' Paradise",          label:"Blue Note",  year:"1958", sub:"Small's Paradise, Harlem, 1957",             desc:"Hammond organ showman in full flight; Dizzy Gillespie's 'The Champ' at insanely fast but fluent speed." },
+    { rank:29, title:"Weather Report: Live In Tokyo",                      label:"Columbia",   year:"1972", sub:"Tokyo, Japan, 1972",                         desc:"Early avant-garde fusion; Zawinul on acoustic/electric piano, Shorter on sax, near-telepathic group interaction." },
+    { rank:30, title:"Mary Lou Williams Trio: At Rick's Cafe Americain",   label:"Storyville", year:"1999", sub:"Rick's Cafe Americain, Chicago, 1979",       desc:"Prolific composer-arranger on piano just two years before her death; bebop fluency, swing, and elegance intact." },
+    { rank:31, title:"Various: Jazz At The Philharmonic Bird & Pres: The '46 Concerts", label:"Verve", year:"1977", sub:"JATP Concerts, 1946",                desc:"Charlie Parker meets Lester Young across three 1946 JATP concerts; Dizzy, Buddy Rich & Coleman Hawkins also star." },
+    { rank:32, title:"Bill Laurance: Live At Union Chapel",                label:"Ground UP",  year:"2016", sub:"Union Chapel, London, May 2015",             desc:"Snarky Puppy keyboardist goes solo with Michael League, 'Sput' Seawright and a full orchestra in a stunning London church." },
+    { rank:33, title:"Snarky Puppy: Sylva",                               label:"Impulse!",   year:"2015", sub:"Dordrecht, Holland, April 2014",             desc:"Grammy-winning collaboration with Metropole Orkest; Jules Buckley's widescreen arrangements lift the band to epic scale." },
+    { rank:34, title:"Thelonious Monk Quartet With John Coltrane: At Carnegie Hall", label:"Blue Note", year:"2005", sub:"Carnegie Hall, New York, November 1957", desc:"Lost for 48 years in the Library of Congress; a reborn Coltrane shines alongside Monk in a landmark concert." },
+    { rank:35, title:"Cecil Taylor: Live At Cafe Montmartre",             label:"Debut",      year:"1963", sub:"Café Montmartre, Copenhagen, late 1962",     desc:"Avant-garde piano at its most visceral; Jimmy Lyons on sax and Arthur Murray on drums give full support." },
+    { rank:36, title:"Ahmad Jamal: But Not For Me: Live At The Pershing", label:"Argo",       year:"1958", sub:"Pershing Hotel, Chicago",                    desc:"Delicate touch and masterful use of space; 'Poinciana' became a signature and the album sold over a million copies." },
+    { rank:37, title:"Anita O'Day: At Mr Kelly's",                        label:"Verve",      year:"1958", sub:"Mr Kelly's, Chicago, April 1958",            desc:"O'Day in spectacular form; breakneck 'Tea For Two' scat shows she improvises like a horn player." },
+    { rank:38, title:"Nina Simone: In Concert",                           label:"Philips",    year:"1964", sub:"Carnegie Hall, New York, Spring 1964",       desc:"Three Carnegie Hall nights yielding 'Mississippi Goddam' and Simone's metamorphosis into protest singer." },
+    { rank:39, title:"Dinah Washington with Clifford Brown: Dinah Jams",  label:"Emarcy",     year:"1954", sub:"Hollywood, August 14, 1954",                 desc:"Studio session with live audience; 'Miss D' and rising star Clifford Brown with Maynard Ferguson and Max Roach." },
+    { rank:40, title:"Dave Grusin Presents GRP All-Star Big Band: Live!", label:"GRP",        year:"1993", sub:"Gotanda Kan-i Hoken Hall, Tokyo, January 1993", desc:"17-piece all-star ensemble takes on Rollins' 'Oleo' and Coltrane's 'Blue Train' with raw power and velvet finesse." },
+    { rank:41, title:"Bill Evans: Sunday At The Village Vanguard",        label:"Riverside",  year:"1961", sub:"Village Vanguard, New York, June 1961",      desc:"Arguably Evans' finest; Scott LaFaro (died ten days later) and Paul Motian create democratic trio interaction." },
+    { rank:42, title:"John Coltrane: At The Village Vanguard",            label:"Impulse!",   year:"1961", sub:"Village Vanguard, New York, November 1961",  desc:"Coltrane's first live album; Eric Dolphy augments the quartet on 'Spiritual,' leading towards A Love Supreme." },
+    { rank:43, title:"Miles Davis & Thelonious Monk: Miles & Monk Live At Newport", label:"Columbia", year:"1964", sub:"Newport Jazz Festival, 1958 & 1963",  desc:"Miles' '58 sextet with Coltrane and Evans faces Monk's '63 quartet; two genius approaches in vivid contrast." },
+    { rank:44, title:"The Quintet: Jazz At Massey Hall",                  label:"Debut",      year:"1956", sub:"Massey Hall, Toronto, May 15, 1953",         desc:"The last time Parker, Gillespie, Powell & Roach played together; Mingus issued this bebop summit on his own label." },
+    { rank:45, title:"Erroll Garner: Concert By The Sea",                 label:"Columbia",   year:"1955", sub:"Sunset School, Carmel, California, September 1955", desc:"Accidentally recorded by a US serviceman; over a million copies sold, a flamboyant pianist at his very best." },
+    { rank:46, title:"Wynton Kelly Trio and Wes Montgomery: Smokin' At The Half Note", label:"Verve", year:"1965", sub:"Half Note, New York, June 1965",     desc:"Kind Of Blue rhythm section backs Montgomery at his peak; 'Four On Six' and 'Unit 7' are standout moments." },
+    { rank:47, title:"Duke Ellington & His Orchestra: At Newport",        label:"Columbia",   year:"1956", sub:"Newport Jazz Festival, 1956",                desc:"Career-reviving Newport appearance; Paul Gonsalves blows a historic 27-chorus solo on 'Diminuendo And Crescendo In Blue'." },
+    { rank:48, title:"Sonny Rollins: A Night At The Village Vanguard",   label:"Blue Note",  year:"1958", sub:"Village Vanguard, New York, November 1957",  desc:"Piano-less trio gives Rollins harmonic freedom; genius-level extemporization from a gushing fount of endless melody." },
+    { rank:49, title:"Ella Fitzgerald: Ella in Berlin: Mack The Knife",  label:"Verve",      year:"1960", sub:"Deutschlandhalle, Berlin, February 1960",    desc:"Ella forgets the words to 'Mack The Knife' and turns the moment into a breathtaking scat improvisation." },
+    { rank:50, title:"Keith Jarrett: The Köln Concert",                  label:"ECM",        year:"1975", sub:"Cologne, January 24, 1975",                  desc:"Jarrett's magnum opus; long solo piano improvisations of spellbinding beauty that define his genius." },
+  ];
 
-function getState(rank) { return states[rank] || 'unset'; }
-function cycleState(rank) {
-  const s = getState(rank);
-  const next = s === 'unset' ? 'have' : s === 'have' ? 'need' : 'unset';
-  states[rank] = next;
-  saveStates(states);
-  return next;
-}
+  const syncStatus = document.getElementById('sync-status');
+  let states = {};
+  let currentFilter = 'all';
 
-function stateIcon(s) {
-  if (s === 'have') return '✓';
-  if (s === 'need') return '✕';
-  return '?';
-}
-function stateLabel(s) {
-  if (s === 'have') return 'Have It';
-  if (s === 'need') return 'Need It';
-  return 'Unset';
-}
+  function getState(rank) { return states[rank] || 'unset'; }
+  function cycleState(rank) {
+    const s = getState(rank);
+    const next = s === 'unset' ? 'have' : s === 'have' ? 'need' : 'unset';
+    if (next === 'unset') delete states[rank];
+    else states[rank] = next;
+    return next;
+  }
+  function stateIcon(s)  { return s === 'have' ? '✓' : s === 'need' ? '✕' : '?'; }
+  function stateLabel(s) { return s === 'have' ? 'Have It' : s === 'need' ? 'Need It' : 'Unset'; }
 
-function buildCards() {
-  const list = document.getElementById('album-list');
-  list.innerHTML = '';
-  albums.forEach(a => {
-    const s = getState(a.rank);
-    const card = document.createElement('div');
-    card.className = `album-card state-${s}`;
-    card.dataset.rank = a.rank;
-    card.dataset.state = s;
-    card.innerHTML = `
-      <div class="rank-col">
-        <span class="rank-label">Rank</span>
-        <span class="rank-num">${a.rank}</span>
-      </div>
-      <div class="info-col">
-        <div class="album-title">${a.title}</div>
-        <div class="album-meta">
-          <span class="badge-year">${a.year}</span>
-          <span class="badge-label">${a.label}</span>
+  function buildCards() {
+    const list = document.getElementById('album-list');
+    list.innerHTML = '';
+    albums.forEach(a => {
+      const s = getState(a.rank);
+      const card = document.createElement('div');
+      card.className = `album-card state-${s}`;
+      card.dataset.rank = a.rank;
+      card.dataset.state = s;
+      card.innerHTML = `
+        <div class="rank-col">
+          <span class="rank-label">Rank</span>
+          <span class="rank-num">${a.rank}</span>
         </div>
-        <div class="album-meta" style="margin-top:2px">
-          <span class="badge-label" style="font-style:italic">${a.sub}</span>
+        <div class="info-col">
+          <div class="album-title">${a.title}</div>
+          <div class="album-meta">
+            <span class="badge-year">${a.year}</span>
+            <span class="badge-label">${a.label}</span>
+          </div>
+          <div class="album-meta" style="margin-top:2px">
+            <span class="badge-label" style="font-style:italic">${a.sub}</span>
+          </div>
+          <div class="album-desc">${a.desc}</div>
         </div>
-        <div class="album-desc">${a.desc}</div>
-      </div>
-      <div class="action-col">
-        <button class="toggle-btn" title="Click to cycle: Unset → Have → Need">${stateIcon(s)}</button>
-        <span class="toggle-label">${stateLabel(s)}</span>
-      </div>
-    `;
-    card.addEventListener('click', () => {
-      const newState = cycleState(a.rank);
-      card.className = `album-card state-${newState}`;
-      card.dataset.state = newState;
-      card.querySelector('.toggle-btn').textContent = stateIcon(newState);
-      card.querySelector('.toggle-label').textContent = stateLabel(newState);
-      updateStats();
-      applyFilter(currentFilter);
+        <div class="action-col">
+          <button class="toggle-btn" title="Click to cycle: Unset → Have → Need">${stateIcon(s)}</button>
+          <span class="toggle-label">${stateLabel(s)}</span>
+        </div>
+      `;
+      card.addEventListener('click', async () => {
+        const newState = cycleState(a.rank);
+        card.className = `album-card state-${newState}`;
+        card.dataset.state = newState;
+        card.querySelector('.toggle-btn').textContent = stateIcon(newState);
+        card.querySelector('.toggle-label').textContent = stateLabel(newState);
+        updateStats();
+        applyFilter(currentFilter);
+        syncStatus.textContent = 'Saving…';
+        syncStatus.style.color = '#f5a623';
+        await setDoc(docRef, states, { merge: false });
+      });
+      list.appendChild(card);
     });
-    list.appendChild(card);
+  }
+
+  function updateStats() {
+    const cards = document.querySelectorAll('.album-card');
+    let have = 0, need = 0;
+    cards.forEach(c => {
+      if (c.dataset.state === 'have') have++;
+      else if (c.dataset.state === 'need') need++;
+    });
+    document.getElementById('stat-have').textContent = have;
+    document.getElementById('stat-need').textContent = need;
+    const pct = Math.round((have / albums.length) * 100);
+    document.getElementById('progress-pct').textContent = pct + '%';
+    document.getElementById('progress-bar').style.width = pct + '%';
+  }
+
+  function applyFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.filter === filter);
+    });
+    document.querySelectorAll('.album-card').forEach(c => {
+      const s = c.dataset.state;
+      let show = true;
+      if (filter === 'have') show = s === 'have';
+      else if (filter === 'need') show = s === 'need';
+      else if (filter === 'unset') show = s === 'unset';
+      c.classList.toggle('hidden', !show);
+    });
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
   });
-}
 
-function updateStats() {
-  const cards = document.querySelectorAll('.album-card');
-  let have = 0, need = 0;
-  cards.forEach(c => {
-    if (c.dataset.state === 'have') have++;
-    else if (c.dataset.state === 'need') need++;
+  document.getElementById('btn-mark-all').addEventListener('click', async () => {
+    albums.forEach(a => { states[a.rank] = 'have'; });
+    buildCards(); updateStats(); applyFilter(currentFilter);
+    await setDoc(docRef, states, { merge: false });
   });
-  document.getElementById('stat-have').textContent = have;
-  document.getElementById('stat-need').textContent = need;
-  const pct = Math.round((have / albums.length) * 100);
-  document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('progress-bar').style.width = pct + '%';
-}
 
-function applyFilter(filter) {
-  currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.filter === filter);
+  document.getElementById('btn-clear').addEventListener('click', async () => {
+    states = {};
+    buildCards(); updateStats(); applyFilter(currentFilter);
+    await setDoc(docRef, {}, { merge: false });
   });
-  document.querySelectorAll('.album-card').forEach(c => {
-    const s = c.dataset.state;
-    let show = true;
-    if (filter === 'have') show = s === 'have';
-    else if (filter === 'need') show = s === 'need';
-    else if (filter === 'unset') show = s === 'unset';
-    c.style.display = show ? '' : 'none';
+
+  // Real-time Firebase listener
+  onSnapshot(docRef, (snapshot) => {
+    states = snapshot.exists() ? snapshot.data() : {};
+    buildCards();
+    updateStats();
+    applyFilter(currentFilter);
+    syncStatus.textContent = 'Synced';
+    syncStatus.style.color = '#4caf50';
   });
-}
-
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
-});
-
-document.getElementById('btn-mark-all').addEventListener('click', () => {
-  albums.forEach(a => { states[a.rank] = 'have'; });
-  saveStates(states);
-  buildCards();
-  updateStats();
-  applyFilter(currentFilter);
-});
-
-document.getElementById('btn-clear').addEventListener('click', () => {
-  states = {};
-  saveStates(states);
-  buildCards();
-  updateStats();
-  applyFilter(currentFilter);
-});
-
-buildCards();
-updateStats();
 </script>
 </body>
 </html>
