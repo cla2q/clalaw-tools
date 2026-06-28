@@ -185,7 +185,10 @@
 
 <nav>
   <span class="nav-brand">CLA <span style="color:#333">|</span> LAW</span>
-  <a href="/tools/">← Tools</a>
+  <div style="display:flex;gap:24px;align-items:center;">
+    <a href="/tools/">← Tools</a>
+    <a href="#" id="sign-out-link">Sign Out</a>
+  </div>
 </nav>
 
 <header>
@@ -235,6 +238,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBfayRskS6VQ8zLMesm3_4ZB1HX84ZbPJ8",
@@ -246,8 +250,19 @@
   };
 
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getFirestore(app);
   const docRef = doc(db, "checklists", "live-jazz");
+
+  // Auth guard
+  document.body.style.visibility = 'hidden';
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = `/tools/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+    } else {
+      document.body.style.visibility = 'visible';
+    }
+  });
 
   const albums = [
     { rank:1,  title:"Art Blakey Quintet: A Night At Birdland",             label:"Blue Note",  year:"1954", sub:"Birdland, New York City",                   desc:"Hard bop powerhouse; Horace Silver, Clifford Brown & Lou Donaldson ignite a legendary Big Apple club night." },
@@ -406,6 +421,12 @@
     states = {};
     buildCards(); updateStats(); applyFilter(currentFilter);
     await setDoc(docRef, {}, { merge: false });
+  });
+
+  document.getElementById('sign-out-link').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await signOut(auth);
+    window.location.href = '/tools/login.html';
   });
 
   // Real-time Firebase listener

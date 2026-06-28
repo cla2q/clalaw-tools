@@ -134,7 +134,10 @@
 
 <nav>
   <span class="nav-brand">CLA <span style="color:#444">|</span> LAW</span>
-  <a href="/tools/">← Tools</a>
+  <div style="display:flex;gap:24px;align-items:center;">
+    <a href="/tools/">← Tools</a>
+    <a href="#" id="sign-out-link">Sign Out</a>
+  </div>
 </nav>
 
 <div class="header">
@@ -176,6 +179,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBfayRskS6VQ8zLMesm3_4ZB1HX84ZbPJ8",
@@ -187,8 +191,19 @@
   };
 
   const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
   const db = getFirestore(app);
   const docRef = doc(db, "checklists", "rolling-stones");
+
+  // Auth guard
+  document.body.style.visibility = 'hidden';
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = `/tools/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+    } else {
+      document.body.style.visibility = 'visible';
+    }
+  });
 
   const albums = [
     { rank: 1,  title: "Get Yer Ya-Ya's Out! The Rolling Stones in Concert", year: 1970, label: "Decca",          tour: "1969 North American Tour",                        note: "Recorded 1969; considered the band's best live LP — raw, thrilling, dangerous." },
@@ -332,6 +347,12 @@
     state = {};
     renderCards(); updateStats(); applyFilter();
     await setDoc(docRef, {}, { merge: false });
+  });
+
+  document.getElementById('sign-out-link').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await signOut(auth);
+    window.location.href = '/tools/login.html';
   });
 
   // Real-time Firebase listener
