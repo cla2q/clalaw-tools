@@ -145,12 +145,18 @@
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
+  const ALLOWED = ['anderson.cl@gmail.com', 'vbrotski@gmail.com'];
   const params = new URLSearchParams(window.location.search);
   const redirect = params.get('redirect') || '/tools/';
 
-  // If already signed in, go straight to destination
+  // Show access denied message if redirected here after an unauthorized attempt
+  if (params.get('error') === 'unauthorized') {
+    document.getElementById('error-msg').textContent = 'That Google account does not have access.';
+  }
+
+  // If already signed in with an allowed account, go straight to destination
   onAuthStateChanged(auth, (user) => {
-    if (user) window.location.href = redirect;
+    if (user && ALLOWED.includes(user.email)) window.location.href = redirect;
   });
 
   const btn = document.getElementById('sign-in-btn');
