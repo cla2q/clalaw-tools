@@ -3,159 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CLA | Sign In</title>
+  <title>C · L · A — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/assets/theme.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0f0f1a;
-      --surface: #16213e;
-      --border: #2a2a4e;
-      --gold: #f5c842;
-      --text: #e8e8e8;
-      --muted: #888;
-      --red: #e74c3c;
-    }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: Georgia, serif;
-      min-height: 100vh;
+    html, body { height: 100%; }
+    body { display: flex; flex-direction: column; }
+
+    main {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: var(--space-2xl) var(--space-lg);
     }
-    .brand {
-      font-size: 1.1rem;
-      font-weight: bold;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 48px;
-    }
+
     .login-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 36px 40px;
       width: 100%;
-      max-width: 380px;
+      max-width: 400px;
     }
-    .login-box h1 {
-      font-size: 1.1rem;
-      color: var(--gold);
-      letter-spacing: 1px;
-      margin-bottom: 28px;
+
+    .login-heading {
+      font-family: var(--f-display);
+      font-size: 40px;
+      font-weight: 300;
+      color: var(--text);
       text-align: center;
-    }
-    label {
-      display: block;
-      font-family: Arial, sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
+      line-height: 1.1;
       margin-bottom: 6px;
     }
-    input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 0.95rem;
-      padding: 10px 14px;
-      outline: none;
-      margin-bottom: 20px;
-      transition: border-color 0.2s;
-      font-family: Georgia, serif;
-    }
-    input:focus { border-color: var(--gold); }
-    .btn-google {
-      width: 100%;
-      background: #fff;
-      color: #333;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .btn-google:hover { background: #f5f5f5; }
-    .btn-google:disabled { opacity: 0.5; cursor: default; }
-    .google-icon { width: 20px; height: 20px; }
-    .btn {
-      width: 100%;
-      background: var(--gold);
-      color: #111;
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      font-family: Arial, sans-serif;
-      letter-spacing: 1px;
-    }
-    .btn:hover { opacity: 0.85; }
-    .btn:disabled { opacity: 0.5; cursor: default; }
-    #error-msg {
-      color: var(--red);
-      font-size: 0.82rem;
+
+    .login-sub {
+      font-family: var(--f-display);
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-3);
       text-align: center;
-      margin-top: 16px;
-      font-family: Arial, sans-serif;
-      min-height: 20px;
+      margin-bottom: var(--space-xl);
     }
-    footer {
-      margin-top: 48px;
-      font-family: Arial, sans-serif;
-      font-size: 0.72rem;
-      color: #333;
-      letter-spacing: 1px;
-    }
+
+    .google-icon { width: 18px; height: 18px; flex-shrink: 0; }
   </style>
 </head>
 <body>
-  <div class="brand">CLA <span style="color:#444">|</span> LAW</div>
 
-  <div class="login-box">
-    <h1>Sign In</h1>
-    <button class="btn-google" id="google-btn">
-      <svg class="google-icon" viewBox="0 0 48 48">
-        <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.9 6.1C12.4 13 17.7 9.5 24 9.5z"/>
-        <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17z"/>
-        <path fill="#FBBC05" d="M10.5 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.9-6.1A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.9-6.1z"/>
-        <path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.3 0-11.6-4.2-13.5-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/>
-      </svg>
-      Sign in with Google
-    </button>
+  <nav class="cla-nav">
+    <a class="wordmark" href="/">C · L · A<br>L · A · W</a>
+  </nav>
 
-    <div style="display:flex;align-items:center;gap:12px;margin:20px 0;">
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-      <span style="font-family:Arial,sans-serif;font-size:0.72rem;color:var(--muted);letter-spacing:1px;">OR</span>
-      <div style="flex:1;height:1px;background:var(--border);"></div>
+  <main>
+    <div class="login-box">
+
+      <h1 class="login-heading">Sign in.</h1>
+      <p class="login-sub">Private access.</p>
+
+      <button class="btn-google" id="google-btn">
+        <svg class="google-icon" viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.9 6.1C12.4 13 17.7 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17z"/>
+          <path fill="#FBBC05" d="M10.5 28.6A14.8 14.8 0 0 1 9.5 24c0-1.6.3-3.1.8-4.6l-7.9-6.1A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.7l7.9-6.1z"/>
+          <path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.3 0-11.6-4.2-13.5-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="divider-or mt-lg mb-lg"><span>or</span></div>
+
+      <label class="field-label" for="email">Email</label>
+      <input class="field-input" type="email" id="email" autocomplete="email" placeholder="you@example.com" />
+
+      <label class="field-label" for="password">Password</label>
+      <input class="field-input" type="password" id="password" autocomplete="current-password" placeholder="••••••••" />
+
+      <button class="btn-ghost btn-block" id="email-btn">Sign in →</button>
+
+      <div class="field-error" id="error-msg"></div>
+
     </div>
+  </main>
 
-    <label for="email">Email</label>
-    <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
-    <label for="password">Password</label>
-    <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" />
-    <button class="btn" id="email-btn">Sign In</button>
-
-    <div id="error-msg"></div>
-  </div>
-
-  <footer>clalaw.me</footer>
+  <footer class="cla-footer">clalaw.me</footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
@@ -180,7 +109,6 @@
   const redirect = params.get('redirect') || '/tools/';
   const errorMsg = document.getElementById('error-msg');
 
-  // Show access denied message if redirected here after an unauthorized attempt
   if (params.get('error') === 'unauthorized') {
     errorMsg.textContent = 'That account does not have access.';
   }
@@ -190,7 +118,6 @@
     return allowDoc.exists() ? (allowDoc.data().emails || []) : [];
   }
 
-  // If already signed in with an allowed account, go straight to destination
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const allowed = await getAllowed();
@@ -203,19 +130,17 @@
     }
   });
 
-  // Google sign-in
   document.getElementById('google-btn').addEventListener('click', async (e) => {
     e.currentTarget.disabled = true;
     errorMsg.textContent = '';
     try {
       await signInWithPopup(auth, provider);
     } catch (err) {
-      errorMsg.textContent = 'Sign-in cancelled or failed. Please try again.';
+      errorMsg.textContent = 'Sign-in cancelled or failed. Try again.';
       e.currentTarget.disabled = false;
     }
   });
 
-  // Email/password sign-in
   async function emailSignIn() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
@@ -229,7 +154,7 @@
     } catch (err) {
       errorMsg.textContent = 'Incorrect email or password.';
       btn.disabled = false;
-      btn.textContent = 'Sign In';
+      btn.textContent = 'Sign in →';
     }
   }
 
