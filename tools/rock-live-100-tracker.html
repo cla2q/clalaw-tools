@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C · L · A — Top 100 Live Rock Albums</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/assets/theme.css">
+<style>
+  :root {
+    --green-dark: #4a8a52;
+    --green-bg:   rgba(106,158,114,0.08);
+    --red-dark:   #8a3a2a;
+    --need-bg:    rgba(184,92,74,0.06);
+    --transition: 0.2s ease;
+  }
+
+  body { padding: 24px 16px 64px; }
+
+  .page-header { text-align: center; margin-bottom: 28px; max-width: 820px; margin-left: auto; margin-right: auto; }
+  .page-eyebrow { font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 10px; }
+  .page-title { font-family: var(--f-display); font-size: 36px; font-weight: 300; color: var(--text); line-height: 1.1; margin-bottom: 6px; }
+  .page-sub { font-family: var(--f-display); font-size: 14px; font-style: italic; color: var(--text-2); }
+
+  .stats-bar { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 10px 20px; text-align: center; min-width: 100px; }
+  .stat .num { font-family: var(--f-display); font-size: 2rem; font-weight: 300; display: block; }
+  .stat .lbl { font-family: var(--f-ui); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); }
+  #stat-have .num { color: var(--green); }
+  #stat-need .num { color: var(--red); }
+  #stat-total .num { color: var(--gold); }
+
+  .progress-wrap { max-width: 600px; margin: 0 auto 24px; }
+  .progress-label { display: flex; justify-content: space-between; font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+  .progress-bar { height: 2px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.4s ease; width: 0%; }
+
+  #sync-status { text-align: center; font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 16px; }
+
+  .controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-3); padding: 6px 16px; border-radius: 99px; font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: var(--transition); }
+  .filter-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .filter-btn.active { background: var(--red); border-color: var(--red); color: var(--text); }
+  .btn-mark-all, .btn-clear-all { background: transparent; border: 1px solid var(--border); color: var(--text-3); padding: 6px 16px; border-radius: 99px; font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: var(--transition); }
+  .btn-mark-all:hover { border-color: var(--green); color: var(--green); }
+  .btn-clear-all:hover { border-color: var(--red); color: var(--red); }
+
+  .section-label { font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); max-width: 820px; margin: 8px auto 4px; padding-left: 4px; }
+
+  .album-list { max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+
+  .album-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; align-items: stretch; overflow: hidden; transition: border-color var(--transition); position: relative; }
+  .album-card:hover { border-color: var(--gold-dim); }
+  .album-card.have { border-color: rgba(106,158,114,0.35); background: linear-gradient(135deg, var(--green-bg), var(--surface)); }
+  .album-card.need { border-color: rgba(184,92,74,0.25); background: linear-gradient(135deg, var(--need-bg), var(--surface)); }
+  .album-card.hidden { display: none; }
+
+  .status-stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  .album-card.have .status-stripe { background: var(--green); }
+  .album-card.need .status-stripe { background: var(--red); }
+
+  .rank-badge { display: flex; align-items: center; justify-content: center; min-width: 58px; font-family: var(--f-display); font-weight: 300; font-size: 1.3rem; color: var(--text-3); background: var(--surface-2); border-right: 1px solid var(--border); flex-shrink: 0; position: relative; }
+  .album-card.have .rank-badge { color: var(--green); }
+  .album-card.need .rank-badge { color: var(--red); }
+  .rank-badge .rank-label { font-family: var(--f-ui); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); position: absolute; top: 8px; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+
+  .album-info { flex: 1; padding: 11px 14px; display: flex; flex-direction: column; gap: 3px; }
+  .album-artist { font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-dim); }
+  .album-title { font-family: var(--f-display); font-weight: 400; font-size: 1rem; color: var(--text); line-height: 1.25; }
+  .album-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .album-year { font-family: var(--f-ui); font-size: 10px; color: var(--gold); background: rgba(200,169,110,0.1); padding: 2px 7px; border-radius: var(--radius-sm); letter-spacing: 0.08em; }
+  .album-label { font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.06em; color: var(--text-3); }
+  .album-note { font-family: var(--f-display); font-size: 13px; font-style: italic; color: var(--text-2); line-height: 1.55; margin-top: 2px; }
+
+  .toggle-wrap { display: flex; align-items: center; padding: 0 14px; flex-shrink: 0; }
+  .toggle-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; background: none; border: none; padding: 6px; border-radius: var(--radius-md); transition: var(--transition); }
+  .toggle-btn:hover { background: rgba(255,255,255,0.04); }
+  .toggle-icon { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; transition: var(--transition); background: var(--surface-2); color: var(--text-3); }
+  .album-card.have .toggle-icon { background: var(--green-dark); border-color: var(--green); color: var(--text); }
+  .album-card.need .toggle-icon { background: var(--red-dark); border-color: var(--red); color: var(--text); }
+  .toggle-label { font-family: var(--f-ui); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); }
+  .album-card.have .toggle-label { color: var(--green); }
+  .album-card.need .toggle-label { color: var(--red); }
+
+  @media (max-width: 540px) {
+    .album-note { display: none; }
+    .rank-badge { min-width: 44px; font-size: 1.05rem; }
+    .toggle-wrap { padding: 0 8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="cla-nav">
+  <a class="wordmark" href="/">C · L · A<br>L · A · W</a>
+  <div class="nav-links">
+    <a href="/tools/">← Tools</a>
+    <a href="#" id="sign-out-link">Sign out</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-eyebrow"><i class="ti ti-vinyl" aria-hidden="true"></i> Rock</div>
+  <h1 class="page-title">Top 100 Live Albums</h1>
+  <p class="page-sub">Ranked by Ultimate Classic Rock — counting down rock's very best concert recordings</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat" id="stat-total"><span class="num" id="total-num">100</span><span class="lbl">Total</span></div>
+  <div class="stat" id="stat-have"><span class="num" id="have-num">0</span><span class="lbl">Have it</span></div>
+  <div class="stat" id="stat-need"><span class="num" id="need-num">0</span><span class="lbl">Need it</span></div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label"><span>Collection progress</span><span id="progress-pct">0%</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</div>
+
+<div id="sync-status">Connecting…</div>
+
+<div class="controls">
+  <button class="filter-btn active" data-filter="all">All (100)</button>
+  <button class="filter-btn" data-filter="have">Have it</button>
+  <button class="filter-btn" data-filter="need">Need it</button>
+  <button class="filter-btn" data-filter="unset">Unmarked</button>
+  <button class="btn-mark-all" id="btn-mark-all">✓ Mark all</button>
+  <button class="btn-clear-all" id="btn-clear-all">✕ Clear all</button>
+</div>
+
+<div class="section-label">▲ Best</div>
+<div class="album-list" id="album-list"></div>
+<div class="section-label" style="margin-top:8px;">▼ Worst</div>
+
+<footer class="cla-footer">Ranked by <a href="https://ultimateclassicrock.com/live-albums-100/" target="_blank" style="color:var(--gold-dim);">Ultimate Classic Rock</a> · Updated December 2023</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfayRskS6VQ8zLMesm3_4ZB1HX84ZbPJ8",
+    authDomain: "clalaw-media-watchlist.firebaseapp.com",
+    projectId: "clalaw-media-watchlist",
+    storageBucket: "clalaw-media-watchlist.firebasestorage.app",
+    messagingSenderId: "980630708974",
+    appId: "1:980630708974:web:8e3d0f9a0d9848b2df49ff"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const docRef = doc(db, "checklists", "rock-live-100");
+
+  document.body.style.visibility = 'hidden';
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = `/tools/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+      return;
+    }
+    const allowDoc = await getDoc(doc(db, 'config', 'allowed-emails'));
+    const allowed = allowDoc.exists() ? (allowDoc.data().emails || []) : [];
+    if (!allowed.includes(user.email)) {
+      await signOut(auth);
+      window.location.href = '/tools/login.html?error=unauthorized';
+    } else {
+      document.body.style.visibility = 'visible';
+    }
+  });
+
+  const albums = [
+    { rank:  1, artist:"Bruce Springsteen & the E Street Band", title:"The Agora, Cleveland 1978",                      year:2015, label:"Nugs.net",        note:"Springsteen was in his glory days in 1978, releasing one of his greatest albums and hitting the road for a historic tour. Many great bootlegs exist, but this official Cleveland release ranks among his all-time best." },
+    { rank:  2, artist:"Crosby Stills Nash & Young",            title:"CSNY 1974",                                       year:2014, label:"Rhino",           note:"This tour was notorious for the offstage (and sometimes onstage) friction among the four members. Some of that seeps into CSNY's music, which is the most raw, haunted and scarred it's ever been." },
+    { rank:  3, artist:"Led Zeppelin",                          title:"Celebration Day",                                 year:2012, label:"Atlantic",        note:"The 2007 reunion was way better than anyone could have expected, with the band pulling out best-loved songs — including an epic 11-minute 'In My Time of Dying' — for one final spin." },
+    { rank:  4, artist:"ZZ Top",                                title:"Live In Germany 1980",                            year:2011, label:"Eagle Rock",      note:"For years, ZZ Top's barnstorming 1980 Rockpalast appearance was the crown jewel of any fan's bootleg collection. Three decades later, this dazzling document was finally made official." },
+    { rank:  5, artist:"Levon Helm",                            title:"Ramble at the Ryman",                             year:2011, label:"Vanguard",        note:"A stirring live document and important reminder of Helm's gifts — the Midnight Ramble revived his career and his voice after cancer treatment, and this Ryman night captures it at full bloom." },
+    { rank:  6, artist:"Bruce Springsteen With the Sessions Band", title:"Live in Dublin",                               year:2007, label:"Columbia",        note:"Springsteen's band-expanded version of the 'We Shall Overcome' album took on a joyous, rollicking life in concert, capturing a side of him rarely documented on record." },
+    { rank:  7, artist:"Led Zeppelin",                          title:"How the West Was Won",                            year:2003, label:"Atlantic",        note:"Drawn from two 1972 shows in Los Angeles, this triple-disc set documents Led Zeppelin at their absolute creative and physical peak, playing with near-superhuman intensity." },
+    { rank:  8, artist:"The Clash",                             title:"From Here to Eternity",                           year:1999, label:"Epic",            note:"The ultimate Clash live document draws from multiple tours including their final peak years, capturing Joe Strummer's frantic energy and the band's genre-blurring firepower." },
+    { rank:  9, artist:"Bob Dylan",                             title:"The Bootleg Series Vol. 4: Live 1966",            year:1998, label:"Columbia",        note:"The legendary 'Royal Albert Hall' concert (actually Manchester) — Dylan going electric as his folk audience heckled, captured the most dramatic rupture in rock history on tape." },
+    { rank: 10, artist:"Led Zeppelin",                          title:"BBC Sessions",                                    year:1997, label:"Atlantic",        note:"Early BBC recordings give a portrait of Led Zeppelin before the myth fully calcified — looser, more playful, and in some ways more nakedly powerful than the studio records." },
+    { rank: 11, artist:"AC/DC",                                 title:"Bonfire",                                         year:1997, label:"Epic",            note:"This five-disc box set includes the previously unreleased 'Let There Be Rock: The Movie Live in Paris,' documenting the Bon Scott era at its most incendiary." },
+    { rank: 12, artist:"Santana",                               title:"Live at the Fillmore 1968",                       year:1997, label:"Columbia",        note:"Long-unavailable recording captures Santana before Woodstock, before the debut album — a rawer, wilder version of the band playing blues-drenched Latin rock with nothing to lose." },
+    { rank: 13, artist:"Paul Butterfield Blues Band",           title:"East-West Live",                                  year:1996, label:"Winner",          note:"The extended improvisations that made the Butterfield Band legendary on the 1966 circuit are finally documented — modal jazz, Indian raga, and Chicago blues in one set." },
+    { rank: 14, artist:"The Police",                            title:"Live",                                            year:1995, label:"A&M",             note:"Drawing from their final 1983 Synchronicity tour, this double album captures the Police as the world's biggest rock band — tight, tense, and barely holding it together." },
+    { rank: 15, artist:"Nirvana",                               title:"Unplugged in New York",                           year:1994, label:"Geffen",          note:"Recorded four months before Cobain's death, this stripped-down acoustic set — covers of Leadbelly, David Bowie, and the Meat Puppets alongside originals — became an elegy." },
+    { rank: 16, artist:"The Beatles",                           title:"Live at the BBC",                                 year:1994, label:"Apple",           note:"Early radio sessions document the Beatles before Beatlemania fully took hold, covering Tin Pan Alley standards and R&B hits with a hunger absent from the polished studio work." },
+    { rank: 17, artist:"Metallica",                             title:"Live S--t: Binge & Purge",                        year:1993, label:"Elektra",         note:"Three CDs and three VHS tapes of Metallica at their commercial and creative peak, drawn from the Wherever We May Roam tour — an honest document of stadium metal done right." },
+    { rank: 18, artist:"Eric Clapton",                          title:"Unplugged",                                       year:1992, label:"Reprise",         note:"The format forced Clapton to strip back the studio sheen and reconnect with his blues roots; 'Layla' alone — reimagined as a gentle acoustic shuffle — justifies every Grammy it won." },
+    { rank: 19, artist:"Neil Young",                            title:"Arc / Weld",                                      year:1991, label:"Reprise",         note:"Weld documents the Ragged Glory tour with Crazy Horse at deafening volume; Arc is an hour of pure noise collage drawn from the same shows, appended for the truly committed." },
+    { rank: 20, artist:"Queen",                                 title:"Live at Wembley '86",                             year:1990, label:"Parlophone",      note:"Freddie Mercury at his absolute peak as a live performer — the 1986 Magic Tour shows at Wembley Stadium, with 72,000 people in attendance, captured his stagecraft at its most enormous." },
+    { rank: 21, artist:"Roy Orbison",                           title:"Black and White Night",                           year:1989, label:"Orbison",         note:"A late-career triumph; Orbison surrounded by admirers (Bruce Springsteen, Elvis Costello, Tom Waits) performing his classics in a stunning, reverential TV concert filmed in black and white." },
+    { rank: 22, artist:"Ozzy Osbourne and Randy Rhoads",        title:"Tribute",                                         year:1987, label:"CBS",             note:"Recorded on Rhoads' final tour before his death in 1982, this tribute album preserves the guitarist's extraordinary live work alongside a sympathetic and energized Osbourne." },
+    { rank: 23, artist:"Guns N' Roses",                         title:"Live ?!*@ Like a Suicide",                        year:1986, label:"UZI Suicide",     note:"Four tracks (two originals, two covers) from GN'R's self-released EP introduced a band that sounded like they'd razed every influence and set fire to the remains." },
+    { rank: 24, artist:"Bruce Springsteen & the E Street Band", title:"Live/1975-85",                                    year:1986, label:"Columbia",        note:"A five-LP box summarizing a decade of legendary shows — sprawling, generous, and essential. It sat at #1 for seven weeks, proving live albums could be genuine cultural events." },
+    { rank: 25, artist:"Jimi Hendrix",                          title:"Jimi Plays Monterey",                             year:1986, label:"Reprise",         note:"Hendrix's June 1967 Monterey Pop set — his U.S. debut, capped by the burning of his guitar — documented with pristine clarity. The moment rock mythology was made in real time." },
+    { rank: 26, artist:"Tom Petty and the Heartbreakers",       title:"Pack Up the Plantation: Live!",                   year:1985, label:"MCA",             note:"Petty's first live album finds the Heartbreakers drawing new ideas out of their catalog rather than simply replicating it, particularly with the then-new 'Southern Accents' material." },
+    { rank: 27, artist:"Iron Maiden",                           title:"Live After Death",                                year:1985, label:"EMI",             note:"Dotted with great songs and strengthened by narrative arc — drawing from just two stops (Long Beach and Hammersmith Odeon) rather than a sprawl of cherry-picked moments." },
+    { rank: 28, artist:"Scorpions",                             title:"World Wide Live",                                 year:1985, label:"EMI",             note:"The essential Scorpions concert recording showcases a group peaking commercially, with plenty from 'Love at First Sting' alongside smart dips into 'Blackout' and 'Lovedrive.'" },
+    { rank: 29, artist:"Talking Heads",                         title:"Stop Making Sense",                               year:1984, label:"Sire",            note:"Even without the visuals and David Byrne's big-suit, this soundtrack to the concert film is killer — old favorites reworked into funky new jams with an expanded onstage lineup." },
+    { rank: 30, artist:"Dire Straits",                          title:"Alchemy",                                         year:1984, label:"Warner Bros.",    note:"An artifact from when bands could stretch a song to its natural limits in concert; 'Sultans of Swing' runs fourteen minutes and earns every one of them." },
+    { rank: 31, artist:"U2",                                    title:"Under a Blood Red Sky",                           year:1983, label:"Island",          note:"A mini-album (eight songs) from U2's 1983 tour that became one of the best-selling live albums ever — Bono's messianic energy and The Edge's delay-drenched guitar captured perfectly." },
+    { rank: 32, artist:"Peter Gabriel",                         title:"Plays Live",                                      year:1983, label:"Geffen",          note:"Gabriel's post-Genesis theatrical live work documented during a period when his increasingly sophisticated solo albums were finding a massive new audience." },
+    { rank: 33, artist:"Simon & Garfunkel",                     title:"The Concert in Central Park",                     year:1982, label:"Warner Bros.",    note:"500,000 people in Central Park for their 1981 reunion — the sheer warmth of the crowd response is as much a part of the recording as the music itself." },
+    { rank: 34, artist:"Rush",                                  title:"Exit … Stage Left",                               year:1981, label:"Mercury",         note:"A career summary drawn from the Moving Pictures and Permanent Waves tours, capturing Rush at their most precise and most powerful before synthesizers began to dominate." },
+    { rank: 35, artist:"Billy Joel",                            title:"Songs in the Attic",                              year:1981, label:"Columbia",        note:"Joel's live treatments of early, lesser-known songs that deserved better than their original studio productions — the definitive Billy Joel live statement." },
+    { rank: 36, artist:"Motörhead",                             title:"No Sleep 'Til Hammersmith",                       year:1981, label:"Bronze",          note:"Lemmy, Fast Eddie Clarke, and Philthy Animal Taylor at their tightest and most ruthless — 12 songs in 40 minutes with absolutely no fat left on the bone." },
+    { rank: 37, artist:"Journey",                               title:"Captured",                                        year:1981, label:"Columbia",        note:"A double-album captured at the peak of Journey's commercial powers, with Steve Perry delivering arena-rock power balladry to worshipful crowds across America." },
+    { rank: 38, artist:"Warren Zevon",                          title:"Stand in the Fire",                               year:1980, label:"Asylum",          note:"A lean, electric document of Zevon's cult-hero period — playing the Roxy in Los Angeles with all the ferocity of someone who knows his moment might be fleeting." },
+    { rank: 39, artist:"Eagles",                                title:"Live",                                            year:1980, label:"Asylum",          note:"Recorded on the Long Run tour, this double album was the band's farewell before their 14-year breakup — and a document of country rock at its most polished and precise." },
+    { rank: 40, artist:"Kinks",                                 title:"One for the Road",                                year:1980, label:"Arista",          note:"Ray Davies and the Kinks rediscovering their vitality in the American arena circuit, ripping through decades of classic songs with genuine joy and irreverence." },
+    { rank: 41, artist:"Eric Clapton",                          title:"Just One Night",                                  year:1980, label:"RSO",             note:"Recorded at Tokyo's Budokan with a crack band, this double album finds Clapton in relaxed, assured form — running through blues, pop, and originals with elegant authority." },
+    { rank: 42, artist:"Neil Young",                            title:"Live Rust",                                       year:1979, label:"Reprise",         note:"The full Rust Never Sleeps concert film's audio component — an acoustic first half and an electric Crazy Horse second, creating the perfect Young live document." },
+    { rank: 43, artist:"Judas Priest",                          title:"Unleashed in the East",                           year:1979, label:"Columbia",        note:"Live in Japan during the peak of Priest's creative powers, with Rob Halford hitting notes that seem to defy physics and the twin-guitar attack of Tipton and Downing at full force." },
+    { rank: 44, artist:"Neil Young",                            title:"Rust Never Sleeps",                               year:1979, label:"Reprise",         note:"Half acoustic, half Crazy Horse electric — Young's live response to punk, beginning with 'My My, Hey Hey' and ending with a half-hour 'Hey Hey, My My' that swallows the world." },
+    { rank: 45, artist:"Queen",                                 title:"Live Killers",                                    year:1979, label:"EMI",             note:"A definitive concert document from the Jazz tour, with Mercury commanding massive European arenas and the band taking 'Bohemian Rhapsody' and 'Sheer Heart Attack' to their logical live extremes." },
+    { rank: 46, artist:"Ramones",                               title:"It's Alive",                                      year:1979, label:"Sire",            note:"28 songs in 55 minutes at the Rainbow Theatre on New Year's Eve 1977 — the Ramones at the peak of their powers, each song slamming into the next like cars in a pile-up." },
+    { rank: 47, artist:"UFO",                                   title:"Strangers in the Night",                          year:1979, label:"Chrysalis",       note:"Michael Schenker's guitar work is the album's axis, delivering hard rock that's both technically dazzling and emotionally raw during what proved to be his final UFO tour." },
+    { rank: 48, artist:"Todd Rundgren",                         title:"Back to the Bars",                                year:1978, label:"Bearsville",      note:"A generous double album that finds Rundgren running through his pop, progressive, and R&B sides with equal facility — demonstrating a versatility few of his contemporaries matched." },
+    { rank: 49, artist:"Sammy Hagar",                           title:"All Night Long",                                  year:1978, label:"Capitol",         note:"Hagar's first live album captures him in his hard-rock glory years before Van Halen — a crowd-pleasing set that leans on his high-energy anthems and blues-rock riffs." },
+    { rank: 50, artist:"Cheap Trick",                           title:"At Budokan",                                      year:1978, label:"Columbia",        note:"One of the most iconic live albums in rock history, practically defining the American band-in-Japan genre. 'I Want You to Want Me' became a hit through this recording alone." },
+    { rank: 51, artist:"Aerosmith",                             title:"Live Bootleg",                                    year:1978, label:"Columbia",        note:"Captures Aerosmith at their '70s zenith roaring through early classics on the 1977–78 tour, with little or no overdubs and choice bonus tracks dating back to 1973." },
+    { rank: 52, artist:"AC/DC",                                 title:"If You Want Blood You've Got It",                 year:1978, label:"Atlantic",        note:"AC/DC's first live album finds the band in peak form just a year before 'Highway to Hell,' with electrifying versions of 'Riff Raff,' 'Bad Boy Boogie,' and 'Let There Be Rock.'" },
+    { rank: 53, artist:"David Bowie",                           title:"Stage",                                           year:1978, label:"RCA",             note:"Bowie paired with Adrian Belew in the midst of his Berlin period — lots of darkly intriguing moments from 'Low' and 'Heroes,' plus older material given the same treatment." },
+    { rank: 54, artist:"Blue Öyster Cult",                      title:"Some Enchanted Evening",                          year:1978, label:"CBS",             note:"A tight, punchy live document from BÖC's commercial peak — '(Don't Fear) The Reaper,' 'Godzilla,' and 'We Gotta Get Out of This Place' given their proper arena due." },
+    { rank: 55, artist:"Various Artists",                       title:"The Last Waltz",                                  year:1978, label:"Warner Bros.",    note:"The Band's farewell concert with Bob Dylan, Van Morrison, Neil Young, Joni Mitchell, Muddy Waters, and more — Martin Scorsese's film and this album capture a mythological send-off." },
+    { rank: 56, artist:"Thin Lizzy",                            title:"Live and Dangerous",                              year:1978, label:"Warner Bros.",    note:"Frequently cited as one of the greatest live albums ever — Phil Lynott's charisma and the twin-guitar attack of Gorham and Robertson captured at their most electrifying." },
+    { rank: 57, artist:"Little Feat",                           title:"Waiting for Columbus",                            year:1978, label:"Warner Bros.",    note:"A warm, sprawling double album from the band's heyday — Lowell George's slide guitar and the group's funky interplay documented across shows in DC and London." },
+    { rank: 58, artist:"Ted Nugent",                            title:"Double Live Gonzo",                               year:1978, label:"Epic",            note:"Pure id, unapologetically American and arena-primed — Nugent's double live album captures the Motor City Madman in his full, unfiltered, high-decibel glory." },
+    { rank: 59, artist:"Jackson Browne",                        title:"Running on Empty",                                year:1977, label:"Asylum",          note:"More than a live album — half recorded in hotel rooms, tour buses, and backstage — this meditation on life on the road became one of 1977's biggest albums." },
+    { rank: 60, artist:"Kiss",                                  title:"Alive II",                                        year:1977, label:"Casablanca",      note:"The follow-up to Alive! captures Kiss at the height of their commercial powers, with new studio tracks appended to make this a major event rather than just a stopgap." },
+    { rank: 61, artist:"Genesis",                               title:"Seconds Out",                                     year:1977, label:"Charisma",        note:"Phil Collins stepping fully into the drummer/vocalist role documents a transition era — two guitars, elaborate arrangements, and prog epics performed with remarkable precision." },
+    { rank: 62, artist:"Foghat",                                title:"Live",                                            year:1977, label:"Bearsville",      note:"Boogie rock at its most enthusiastic — 'Slow Ride' extended to a ten-minute live workout became a staple of AOR radio and the track that defines this era of the band." },
+    { rank: 63, artist:"Wings",                                 title:"Wings Over America",                              year:1976, label:"Capitol",         note:"McCartney's first proper tour since the Beatles, and this triple album is a generous document — Beatles classics mixed with Wings material, performing to enormous arenas." },
+    { rank: 64, artist:"Iggy & the Stooges",                   title:"Metallic K.O.",                                   year:1976, label:"Skydog",          note:"The Stooges' final show in 1974, with audience members pelting the stage with bottles — the most confrontational and honestly recorded rock concert document ever made." },
+    { rank: 65, artist:"Rush",                                  title:"All the World's a Stage",                        year:1976, label:"Mercury",         note:"Rush's debut live album captures Lifeson, Lee, and Peart at the end of the Caress of Steel tour — a workmanlike document of a power trio still finding their most ambitious voice." },
+    { rank: 66, artist:"Lynyrd Skynyrd",                        title:"One More From the Road",                          year:1976, label:"MCA",             note:"The essential Lynyrd Skynyrd live album — 'Free Bird' runs fourteen minutes, 'Sweet Home Alabama' is the crowd anthem it was always meant to be, and Ronnie Van Zant is untouchable." },
+    { rank: 67, artist:"J. Geils Band",                         title:"Blow Your Face Out",                              year:1976, label:"Atlantic",        note:"A tremendous document of J. Geils in their live prime — the band that was always better onstage than in the studio, capturing the sweaty, irresistible energy of their club circuit." },
+    { rank: 68, artist:"Bob Seger",                             title:"Live Bullet",                                     year:1976, label:"Capitol",         note:"Recorded in Detroit before Seger broke nationally, this double album captures a genuinely hungry artist playing to a hometown crowd that understood him before anyone else did." },
+    { rank: 69, artist:"Peter Frampton",                        title:"Frampton Comes Alive!",                           year:1976, label:"A&M",             note:"The album that redefined what a live double album could do commercially — 6 million copies in its first year — capturing Frampton and his talk box at their most crowd-pleasing." },
+    { rank: 70, artist:"Kiss",                                  title:"Alive!",                                          year:1975, label:"Casablanca",      note:"The album that saved Kiss's career and established the template for arena rock spectacle as a recorded art form — four studio albums' worth of material finally sounding like a force of nature." },
+    { rank: 71, artist:"King Crimson",                          title:"USA",                                             year:1975, label:"Island",          note:"The final document of the Bruford-Wetton-Cross-Fripp lineup from 1974 — arguably the most technically demanding and adventurous live rock band of their era, preserved at peak intensity." },
+    { rank: 72, artist:"Joni Mitchell",                         title:"Miles of Aisles",                                 year:1974, label:"Asylum",          note:"Mitchell backed by Tom Scott and the L.A. Express on a 1974 tour that blended jazz and folk — her gentle rapport with the crowd and the warmth of these performances are unmistakable." },
+    { rank: 73, artist:"Velvet Underground",                    title:"Live 1969",                                       year:1974, label:"Mercury",         note:"Two 1969 shows bookending their most fertile period, with 'Pale Blue Eyes,' 'Heroin,' and 'Sister Ray' captured in intimate venues before the band's dissolution." },
+    { rank: 74, artist:"Emerson Lake & Palmer",                 title:"Welcome Back My Friends to the Show That Never Ends", year:1974, label:"Manticore",  note:"A career-straddling triple live album from ELP's 1974 Brain Salad Surgery tour — excess as aesthetic, with a 26-minute 'Karn Evil 9' that is either magnificent or maddening depending on your allegiance." },
+    { rank: 75, artist:"Bob Dylan and the Band",                title:"Before the Flood",                                year:1974, label:"Columbia",        note:"Dylan's first official live album draws from the massive 1974 reunion tour — drastically reworked arrangements of classics, performed with a swagger that alienated some and thrilled others." },
+    { rank: 76, artist:"Van Morrison",                          title:"It's Too Late to Stop Now",                       year:1974, label:"Warner Bros.",    note:"Morrison is a notoriously unreliable live performer, but here he's on fire. The nine-minute 'Caravan' is one of the most electrifying performances in rock's live catalog." },
+    { rank: 77, artist:"Lou Reed",                              title:"Rock N Roll Animal",                              year:1974, label:"RCA",             note:"Post-Velvet Underground, Reed transformed into a glam rock star for this buzzing live album — with future Alice Cooper guitarists Steve Hunter and Dick Wagner providing the muscle." },
+    { rank: 78, artist:"Yes",                                   title:"Yessongs",                                        year:1973, label:"Atlantic",        note:"Dramatic in both scale and style, this three-LP set documents Yes at their most ambitious — a creative crossroads where every song felt like it might run on indefinitely." },
+    { rank: 79, artist:"Hawkwind",                              title:"Space Ritual",                                    year:1973, label:"United Artists",  note:"The essential document of Hawkwind's sci-fi space-rock experience — extended cosmic jams, light shows, and Lemmy on bass, captured across two 1972 UK concerts." },
+    { rank: 80, artist:"Derek and the Dominos",                 title:"In Concert",                                      year:1973, label:"RSO",             note:"Recorded in late 1970, these shows capture Clapton and Duane Allman collaborator Bobby Whitlock in what might be the best unreleased material from the Layla era finally made official." },
+    { rank: 81, artist:"Deep Purple",                           title:"Made in Japan",                                   year:1972, label:"Warner Bros.",    note:"The definitive hard rock live album — Blackmore, Lord, Gillan, Glover, and Paice at peak power on the Machine Head tour, with 'Space Truckin'' alone running nearly twenty minutes." },
+    { rank: 82, artist:"The Band",                              title:"Rock of Ages",                                    year:1972, label:"Capitol",         note:"Recorded on New Year's Eve 1971–72 with a horn section arranged by Allen Toussaint — The Band adding orchestral New Orleans brass to their already-mythological catalog." },
+    { rank: 83, artist:"Various Artists",                       title:"The Concert for Bangladesh",                      year:1971, label:"Apple",           note:"The first major rock charity concert, organized by George Harrison and Ravi Shankar — Dylan, Clapton, Leon Russell, and Ringo Starr performing for Bangladesh famine relief." },
+    { rank: 84, artist:"Humble Pie",                            title:"Performance: Rockin' the Fillmore",               year:1971, label:"A&M",             note:"Humble Pie's breakthrough document — Steve Marriott tearing his voice apart over four sides of vinyl at Bill Graham's Fillmore East, including a 23-minute 'I Don't Need No Doctor.'" },
+    { rank: 85, artist:"Grateful Dead",                         title:"Grateful Dead (Skull & Roses)",                   year:1971, label:"Warner Bros.",    note:"The first official live Grateful Dead album — known as Skull & Roses — captures the band's ability to stretch songs into communal meditations without losing the thread." },
+    { rank: 86, artist:"Chicago",                               title:"At Carnegie Hall",                                year:1971, label:"Columbia",        note:"A four-LP box capturing Chicago at their most ambitious — jazz-rock fusion performed for a rapt Carnegie Hall audience, evidence that rock could aspire to any venue." },
+    { rank: 87, artist:"The Allman Brothers Band",              title:"At Fillmore East",                                year:1971, label:"Capricorn",       note:"Arguably the greatest live rock album ever made — Duane Allman and Dickey Betts's twin guitars, Berry Oakley's bass, and two drummers creating something that transcends genre entirely." },
+    { rank: 88, artist:"Elton John",                            title:"17-11-70",                                        year:1971, label:"Uni",             note:"A radio broadcast from his first major New York appearance, with just Elton, Dee Murray, and Nigel Olsson delivering a thrillingly energetic set that introduced him to America." },
+    { rank: 89, artist:"Crosby, Stills, Nash & Young",          title:"Four-Way Street",                                 year:1971, label:"Atlantic",        note:"A sprawling double album from the 1970 CSNY tour — acoustic sets, electric sets, and the first official live document of one of rock's great supergroups at their tensest." },
+    { rank: 90, artist:"Grand Funk Railroad",                   title:"Live Album",                                      year:1970, label:"Capitol",         note:"Grand Funk's double live album captures the commercial reality of early '70s hard rock — a band that sold out stadiums before critics took notice, raw and unashamed." },
+    { rank: 91, artist:"Joe Cocker",                            title:"Mad Dogs & Englishmen",                           year:1971, label:"A&M",             note:"Leon Russell assembled a 40-person traveling circus for this famous 1970 tour — the live document captures one of rock's most charismatic vocalists in genuine communal euphoria." },
+    { rank: 92, artist:"Various Artists",                       title:"Woodstock",                                       year:1970, label:"Atlantic",        note:"The three-LP soundtrack to the defining cultural event of a generation — imperfect, occasionally muddy, and utterly indispensable as a document of August 1969." },
+    { rank: 93, artist:"The Who",                               title:"Live at Leeds",                                   year:1970, label:"Track",           note:"Frequently cited as the greatest live rock album ever made — raw, loud, and stripped of all studio artifice, capturing the Who as the most powerful live band on earth in 1970." },
+    { rank: 94, artist:"The Rolling Stones",                    title:"Get Yer Ya-Ya's Out!",                            year:1970, label:"Decca",           note:"Recorded on the infamous 1969 North American tour — raw, thrilling, dangerous, and the definitive document of the Stones as the World's Greatest Rock and Roll Band." },
+    { rank: 95, artist:"Cream",                                 title:"Live Cream",                                      year:1970, label:"Atco",            note:"Drawn from 1968 shows, this first official live Cream release captures the power trio in full improvisational flight — 'NSU' and 'Politician' given extended workout treatment." },
+    { rank: 96, artist:"Jimi Hendrix",                          title:"Band of Gypsys",                                  year:1970, label:"Capitol",         note:"Hendrix's new trio debuted on New Year's Eve 1969 with a more soulful, funkier approach — the 12-minute 'Machine Gun' stands as one of the most devastating performances in rock history." },
+    { rank: 97, artist:"Grateful Dead",                         title:"Live/Dead",                                       year:1969, label:"Warner Bros.",    note:"The definitive live album from the definitive live band — a spaced-out classic that takes its own long, strange path getting to wherever it's going, and arrives somewhere extraordinary." },
+    { rank: 98, artist:"MC5",                                   title:"Kick Out the Jams",                               year:1969, label:"Elektra",         note:"In their prime the MC5 were scary, fearless, and explosive. This is punk's ground zero — a document of a band playing with such political and sonic intensity it still feels dangerous." },
+    { rank: 99, artist:"Cream",                                 title:"Wheels of Fire",                                  year:1968, label:"Atco",            note:"The studio half is great, but the four live songs are better — the trio tears through blues standards 'Crossroads' and 'Spoonful' like they were theirs from the very start." },
+    { rank:100, artist:"The Yardbirds",                         title:"Five Live Yardbirds",                             year:1964, label:"Columbia",        note:"The album that made Eric Clapton a god to guitar-worshiping kids across the U.K. — an explosive document of a British blues band fueling American music with power and resourcefulness." },
+  ];
+
+  const syncStatus = document.getElementById('sync-status');
+  let state = {};
+  let activeFilter = 'all';
+
+  function iconFor(s)  { return s === 'have' ? '✓' : s === 'need' ? '◯' : '·'; }
+  function labelFor(s) { return s === 'have' ? 'Have it' : s === 'need' ? 'Need it' : 'Unset'; }
+  function cycleStatus(cur) { return !cur ? 'have' : cur === 'have' ? 'need' : null; }
+
+  function renderCards() {
+    const list = document.getElementById('album-list');
+    list.innerHTML = '';
+    albums.forEach(a => {
+      const s = state[a.rank] || null;
+      const card = document.createElement('div');
+      card.className = 'album-card' + (s ? ' ' + s : '');
+      card.dataset.rank = a.rank;
+      card.innerHTML = `
+        <div class="status-stripe"></div>
+        <div class="rank-badge">
+          <span class="rank-label">Rank</span>
+          <span class="rank-num">${a.rank}</span>
+        </div>
+        <div class="album-info">
+          <div class="album-artist">${a.artist}</div>
+          <div class="album-title">${a.title}</div>
+          <div class="album-meta">
+            <span class="album-year">${a.year}</span>
+            <span class="album-label">${a.label}</span>
+          </div>
+          <div class="album-note">${a.note}</div>
+        </div>
+        <div class="toggle-wrap">
+          <button class="toggle-btn" title="Click to toggle status">
+            <div class="toggle-icon">${iconFor(s)}</div>
+            <span class="toggle-label">${labelFor(s)}</span>
+          </button>
+        </div>
+      `;
+      card.querySelector('.toggle-btn').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const cur = state[a.rank] || null;
+        const next = cycleStatus(cur);
+        if (next) state[a.rank] = next;
+        else delete state[a.rank];
+        card.className = 'album-card' + (next ? ' ' + next : '');
+        card.querySelector('.toggle-icon').textContent = iconFor(next);
+        card.querySelector('.toggle-label').textContent = labelFor(next);
+        updateStats();
+        applyFilter();
+        syncStatus.textContent = 'Saving…';
+        syncStatus.style.color = 'var(--gold)';
+        await setDoc(docRef, state, { merge: false });
+      });
+      list.appendChild(card);
+    });
+  }
+
+  function updateStats() {
+    let have = 0, need = 0;
+    albums.forEach(a => {
+      const s = state[a.rank];
+      if (s === 'have') have++;
+      if (s === 'need') need++;
+    });
+    document.getElementById('have-num').textContent = have;
+    document.getElementById('need-num').textContent = need;
+    const pct = Math.round((have / albums.length) * 100);
+    document.getElementById('progress-pct').textContent = pct + '%';
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  function applyFilter() {
+    document.querySelectorAll('.album-card').forEach(card => {
+      const s = state[card.dataset.rank] || null;
+      const match = (
+        activeFilter === 'all' ||
+        (activeFilter === 'have' && s === 'have') ||
+        (activeFilter === 'need' && s === 'need') ||
+        (activeFilter === 'unset' && !s)
+      );
+      card.classList.toggle('hidden', !match);
+    });
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilter();
+    });
+  });
+
+  document.getElementById('btn-mark-all').addEventListener('click', async () => {
+    albums.forEach(a => { state[a.rank] = 'have'; });
+    renderCards(); updateStats(); applyFilter();
+    await setDoc(docRef, state, { merge: false });
+  });
+
+  document.getElementById('btn-clear-all').addEventListener('click', async () => {
+    state = {};
+    renderCards(); updateStats(); applyFilter();
+    await setDoc(docRef, {}, { merge: false });
+  });
+
+  document.getElementById('sign-out-link').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await signOut(auth);
+    window.location.href = '/tools/login.html';
+  });
+
+  onSnapshot(docRef, (snapshot) => {
+    state = snapshot.exists() ? snapshot.data() : {};
+    renderCards();
+    updateStats();
+    applyFilter();
+    syncStatus.textContent = 'Synced';
+    syncStatus.style.color = 'var(--green)';
+  });
+</script>
+</body>
+</html>
