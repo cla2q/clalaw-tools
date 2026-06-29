@@ -3,75 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CLA | LAW</title>
+  <title>C · L · A</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/theme.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { display: flex; flex-direction: column; }
 
-    :root {
-      --bg: #0f0f1a;
-      --surface: #16162a;
-      --gold: #f5c842;
-      --gold-dim: rgba(245, 200, 66, 0.15);
-      --text: #e8e8e8;
-      --muted: #ccc;
-      --border: rgba(255,255,255,0.07);
-    }
-
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: Georgia, 'Times New Roman', serif;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    /* NAV */
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 28px 48px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-brand {
-      font-size: 1.1rem;
-      font-weight: bold;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      text-decoration: none;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 36px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-family: 'Josefin Sans', sans-serif
-      font-size: 0.78rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--gold);
-    }
-
-    /* HERO */
     main {
       flex: 1;
       display: flex;
@@ -79,65 +18,70 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 60px 24px;
+      padding: var(--space-2xl) var(--space-lg);
     }
 
-    .wordmark {
-      font-size: clamp(3rem, 10vw, 7rem);
-      font-weight: bold;
-      letter-spacing: 6px;
+    .hero-eyebrow {
+      font-family: var(--f-ui);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: var(--space-lg);
+    }
+
+    .hero-heading {
+      font-family: var(--f-display);
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.08;
       color: var(--text);
-      line-height: 1;
-      margin-bottom: 32px;
+      margin-bottom: var(--space-xl);
+      letter-spacing: -0.01em;
     }
 
-    .wordmark span {
+    .hero-heading em {
+      font-style: italic;
       color: var(--gold);
     }
 
-    .divider {
-      width: 48px;
-      height: 2px;
-      background: var(--gold);
-      margin: 0 auto 32px;
-      opacity: 0.6;
+    .hero-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--gold-dim);
+      margin: 0 auto var(--space-xl);
     }
 
-    .tagline {
-      font-size: 1.05rem;
-      color: var(--muted);
-      letter-spacing: 1px;
+    .hero-sub {
+      font-family: var(--f-display);
+      font-size: 16px;
       font-style: italic;
-    }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 24px;
-      font-family: 'Josefin Sans', sans-serif
-      font-size: 0.72rem;
-      letter-spacing: 1px;
-      color: #bbb;
-      border-top: 1px solid var(--border);
+      font-weight: 400;
+      color: var(--text-2);
+      max-width: 440px;
+      line-height: 1.7;
+      margin-bottom: var(--space-xl);
     }
   </style>
 </head>
 <body>
 
-  <nav>
-    <a class="nav-brand" href="/">CLA <span style="color:#444">|</span> LAW</a>
-    <ul class="nav-links">
-      <li><a href="/tools/">Tools</a></li>
-    </ul>
+  <nav class="cla-nav">
+    <a class="wordmark" href="/">C · L · A<br>L · A · W</a>
+    <div class="nav-links">
+      <a href="/tools/">Tools</a>
+    </div>
   </nav>
 
   <main>
-    <div class="wordmark">CLA <span>|</span> LAW</div>
-    <div class="divider"></div>
-    <p class="tagline">Converse and Deliberate.</p>
+    <div class="hero-eyebrow">Christopher L. Anderson</div>
+    <h1 class="hero-heading">Converse<br>and <em>Deliberate.</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Writing, reading, music, and the occasional legal aperçu.<br>Juneau-raised, Seattle-rooted.</p>
+    <a class="btn-ghost" href="/tools/">Explore →</a>
   </main>
 
-  <footer>clalaw.me</footer>
+  <footer class="cla-footer">clalaw.me</footer>
 
 </body>
 </html>
