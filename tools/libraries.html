@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C · L · A — Libraries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/assets/theme.css">
+<style>
+  body { padding: 24px 16px 64px; }
+
+  .page-header { text-align: center; margin-bottom: 36px; }
+  .page-eyebrow { font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 10px; }
+  .page-title   { font-family: var(--f-display); font-size: 36px; font-weight: 300; color: var(--text); line-height: 1.1; margin-bottom: 6px; }
+  .page-sub     { font-family: var(--f-display); font-size: 14px; font-style: italic; color: var(--text-2); }
+
+  .libraries    { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+
+  .library-block { display: flex; flex-direction: column; gap: 0; }
+
+  .library-header {
+    display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .library-meta { display: flex; flex-direction: column; gap: 3px; }
+  .library-label { font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-dim); }
+  .library-title { font-family: var(--f-display); font-size: 22px; font-weight: 400; color: var(--text); line-height: 1.2; }
+  .library-desc  { font-family: var(--f-display); font-size: 13px; font-style: italic; color: var(--text-2); margin-top: 2px; }
+
+  .library-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .btn-open {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-3);
+    font-family: var(--f-ui); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 6px 14px;
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .btn-open:hover { border-color: var(--gold-dim); color: var(--gold); text-decoration: none; }
+
+  .sheet-frame-wrap {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    overflow: hidden;
+    background: #fff;
+    height: 640px;
+  }
+
+  .sheet-frame-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .frame-cover {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--surface);
+    z-index: 2;
+    transition: opacity 0.3s;
+  }
+  .frame-cover.loaded { opacity: 0; pointer-events: none; }
+  .frame-cover-text {
+    font-family: var(--f-display);
+    font-style: italic;
+    color: var(--text-3);
+    font-size: 14px;
+  }
+  .frame-spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold-dim);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .sheet-frame-wrap { height: 480px; }
+    .library-title { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="cla-nav">
+  <a class="wordmark" href="/">C · L · A<br>L · A · W</a>
+  <div class="nav-links">
+    <a href="/tools/">← Tools</a>
+    <a href="#" id="sign-out-link">Sign out</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-eyebrow"><i class="ti ti-books" aria-hidden="true"></i> Collections</div>
+  <h1 class="page-title">Libraries</h1>
+  <p class="page-sub">Music and books — inventory and collection records.</p>
+</div>
+
+<div class="libraries">
+
+  <!-- Music Library -->
+  <div class="library-block">
+    <div class="library-header">
+      <div class="library-meta">
+        <div class="library-label"><i class="ti ti-vinyl" aria-hidden="true"></i> Music</div>
+        <div class="library-title">Music Library Inventory</div>
+        <div class="library-desc">Full catalog of physical and digital music — LPs, CDs, and digital collection.</div>
+      </div>
+      <div class="library-actions">
+        <a class="btn-open" href="https://docs.google.com/spreadsheets/d/1k1cDT_OaVE5Zmf39OYzrNP-1c5LeLRQ8AQerh7ENx_E/edit" target="_blank" rel="noopener">
+          ↗ Open in Sheets
+        </a>
+      </div>
+    </div>
+    <div class="sheet-frame-wrap" id="music-wrap">
+      <div class="frame-cover" id="music-cover">
+        <div class="frame-spinner"></div>
+        <div class="frame-cover-text">Loading spreadsheet…</div>
+      </div>
+      <iframe
+        id="music-frame"
+        src="https://docs.google.com/spreadsheets/d/1k1cDT_OaVE5Zmf39OYzrNP-1c5LeLRQ8AQerh7ENx_E/edit?rm=minimal"
+        title="Music Library Inventory"
+        loading="lazy"
+        allow="clipboard-read; clipboard-write"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- Book Library -->
+  <div class="library-block">
+    <div class="library-header">
+      <div class="library-meta">
+        <div class="library-label"><i class="ti ti-book-2" aria-hidden="true"></i> Books</div>
+        <div class="library-title">Book Library</div>
+        <div class="library-desc">Personal book collection — library inventory and reading records.</div>
+      </div>
+      <div class="library-actions">
+        <a class="btn-open" href="https://docs.google.com/spreadsheets/d/143f5hwuRuTUGkzraS9qysByBYJ7X_VbP8-pHtzgdPXU/edit" target="_blank" rel="noopener">
+          ↗ Open in Sheets
+        </a>
+      </div>
+    </div>
+    <div class="sheet-frame-wrap" id="books-wrap">
+      <div class="frame-cover" id="books-cover">
+        <div class="frame-spinner"></div>
+        <div class="frame-cover-text">Loading spreadsheet…</div>
+      </div>
+      <iframe
+        id="books-frame"
+        src="https://docs.google.com/spreadsheets/d/143f5hwuRuTUGkzraS9qysByBYJ7X_VbP8-pHtzgdPXU/edit?rm=minimal"
+        title="Book Library"
+        loading="lazy"
+        allow="clipboard-read; clipboard-write"
+      ></iframe>
+    </div>
+  </div>
+
+</div>
+
+<footer class="cla-footer">clalaw.me / tools / libraries</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfayRskS6VQ8zLMesm3_4ZB1HX84ZbPJ8",
+    authDomain: "clalaw-media-watchlist.firebaseapp.com",
+    projectId: "clalaw-media-watchlist",
+    storageBucket: "clalaw-media-watchlist.firebasestorage.app",
+    messagingSenderId: "980630708974",
+    appId: "1:980630708974:web:8e3d0f9a0d9848b2df49ff"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  document.body.style.visibility = 'hidden';
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = `/tools/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+      return;
+    }
+    const allowDoc = await getDoc(doc(db, 'config', 'allowed-emails'));
+    const allowed = allowDoc.exists() ? (allowDoc.data().emails || []) : [];
+    if (!allowed.includes(user.email)) {
+      await signOut(auth);
+      window.location.href = '/tools/login.html?error=unauthorized';
+    } else {
+      document.body.style.visibility = 'visible';
+    }
+  });
+
+  document.getElementById('sign-out-link').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await signOut(auth);
+    window.location.href = '/tools/login.html';
+  });
+
+  // Dismiss loading cover once each iframe loads (or after a timeout)
+  function coverLoaded(frameId, coverId) {
+    const frame = document.getElementById(frameId);
+    const cover = document.getElementById(coverId);
+    const dismiss = () => cover.classList.add('loaded');
+    frame.addEventListener('load', dismiss);
+    // Fallback: dismiss after 8 seconds regardless
+    setTimeout(dismiss, 8000);
+  }
+  coverLoaded('music-frame', 'music-cover');
+  coverLoaded('books-frame', 'books-cover');
+</script>
+</body>
+</html>
